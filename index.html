@@ -1,0 +1,46 @@
+<html>
+<head>
+    <title>Tetris</title>
+    <style>
+        #score{
+            display: inline-block;
+        }
+        div{
+            font-size: 25px;
+            font-weight: bold;
+            font-family: monospace;
+            text-align: center;
+        }
+
+        #tetris{
+            position: absolute;
+            left: 50%;
+            margin-left: -100px;
+        }
+
+        #hold {
+            position: absolute;
+            left: 50%;
+            margin-left: -200px;
+        }
+
+        #next {
+            position: absolute;;
+            left:50%;
+            margin-left: 120px;
+        }
+
+
+    </style>
+</head>
+<body>
+   <div>TETRIS</div><br>
+
+    <canvas id="tetris" width="200" height="400"></canvas>
+    <canvas id="hold" width="100" height="100"></canvas>
+    <canvas id="next" width="100" height="300"></canvas>
+    <script src="tetrominoes.js"></script>
+    <script src="tetromino.js"></script>
+    <script src="tetris.js"></script>
+</body>
+</html>
