@@ -1,0 +1,13 @@
+mkdir <directory name>
+git clone <url>
+git branch <branch name>
+git checkout <branch name>
+//make changes to files
+git add -A
+git commit -m <commit message>
+git push -u origin <branch name>
+//merge branches back to master
+git checkout master
+git pull origin master
+git merge <branch name>
+git push origin master
