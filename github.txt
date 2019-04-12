@@ -11,3 +11,5 @@ git checkout master
 git pull origin master
 git merge <branch name>
 git push origin master
+
+https://hal.inria.fr/hal-00926213/document
