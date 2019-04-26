@@ -10,10 +10,17 @@ class Tetromino {
       cleared : 0, //maximize
       bumpiness : 0, //minimize
 }
+this.actual = {
+      height : 0, //minimize
+      holes : 0, //minimize
+      cleared : 0, //maximize
+      bumpiness : 0, //minimize
+}
 
 
     this.tetrominoIdx = 0;
     this.currTetromino = this.tetromino[this.tetrominoIdx];
+
 
     this.x = 3;
     this.y = -1;
@@ -35,7 +42,7 @@ class Tetromino {
   }
 
   hide() {
-    this.fill(VACANT);
+    this.fill("WHITE");
   }
   showGhost() {
     this.calcDropPosition();
@@ -115,28 +122,6 @@ class Tetromino {
 
  }
 
- checkLines() {
-    let linesCleared = 0;
-    for (var r = ROW -1; r > 0; r --) {
-      let filled = 0;
-      for (var c = 0; c < COL; c ++) {
-        if (gameBoard[r][c] != VACANT) {
-          filled ++;
-        }
-      }
-      if (filled == 10) {
-        this.clearLine(r);
-        if (ai == true) {
-          linesCleared ++;
-          this.features.cleared = linesCleared;
-        }
-      }
-    }
-
-    drawGrid(gameBoard, tetrisCtx);
-
-  }
-
   clearLine(row) {
     for (let y = row; y > 1; y--) {
       for (let c = 0; c < COL; c++) {
@@ -144,7 +129,7 @@ class Tetromino {
       }
     }
 
-    gameBoard[0] = Array.from(new Array(COLUMN), (c,j) => c = VACANT);
+    gameBoard[0] = Array.from(new Array(COLUMN), (c,j) => c = "WHITE");
   }
 
   collision(x,y,piece,ghost) {
@@ -168,20 +153,45 @@ class Tetromino {
             if(nextY < 0)
               continue;
 
-            if(gameBoard[nextY][nextX] != VACANT)
+            if(gameBoard[nextY][nextX] != "WHITE")
               return true;
           }
         }
         return false;
       }
 
+  checkLines(board) {
+    let linesCleared = 0;
+    for (var r = ROW -1; r > 0; r --) {
+      let filled = 0;
+      for (var c = 0; c < COL; c ++) {
+        if (gameBoard[r][c] != "WHITE") {
+          filled ++;
+        }
+      }
+      if (filled == 10) {
+        this.clearLine(r);
+        lines ++;
+         linesCleared ++;
+      }
+    }
+
+      if (ai == true) {
+          this.actual.cleared =  linesCleared;
+          this.features.cleared = sigmoid(linesCleared);
+        }
+
+
+    drawGrid(gameBoard, tetrisCtx);
+
+  }
       lock(board) {
         for (let r = 0; r < this.currTetromino.length; r++) {
           for (let c = 0; c < this.currTetromino.length; c++) {
             if (this.currTetromino[r][c]) {
               if (this.y + r < 0) {
                 gameOver = true;
-                clearBoard();
+                endGame();
                 break;
               }
               board[this.y + r][this.x + c] = this.color;
@@ -198,47 +208,48 @@ class Tetromino {
 //Feature functions
 calcFeatures(board) {
   //landing height
+  //the height where right above it the whole row is empty.
   let height = 0;
-    let rowsArr = board.reduce((a, row) => a.concat(row.filter(col => col != VACANT).length), []);
+    let rowsArr = board.reduce((a, row) => a.concat(row.filter(col => col != "WHITE").length), []);
      for (var i = rowsArr.length; i >= 0;  i --) {
         if (rowsArr[i] == 0) {
             height = ROW - i - 1;
             break;
         }
      }
-     this.features.height = height;
+     this.features.height = sigmoid(height);
+     this.actual.height = height;
 
      //bumpiness
      //the sum of the absolute differeces between the heights of adjacent columns.
-    let temp = copyMatrix(board);
-    let transpose = temp[0].map((col, i) => temp.map(row => row[i]));
-    let colHeights = [];
-    transpose.forEach((elm, i) => {
-        for (let j = ROW - 1; j >= 0; j--) {
-            if (transpose[i][j] == "WHITE") {
-                colHeights.push(ROW - j - 1);
-                break;
-            }
+    let colHeights = [0,0,0,0,0,0,0,0,0,0];
+    for (let c = 0; c < board[0].length; c ++) {
+      for (let r = 0; r < board.length; r++) {
+        if (board[r][c] != "WHITE") {
+          colHeights[c] = ROW - r;
+          break;
         }
-    })
-
+      }
+    }
     let sum = 0;
-    for (let i = 0; i < colHeights.length - 1; i++) {
-        sum += Math.abs(colHeights[i] - colHeights[i+1]);
+    for (let j = 0; j < colHeights.length - 1; j++) {
+        sum += Math.abs(colHeights[j] - colHeights[j+1]);
     }
 
-    this.features.bumpiness = sum;
+    this.features.bumpiness = sigmoid(sum);
+    this.actual.bumpiness= sum;
 
-//the number of vacant sqaures with a filled sqaure above it.
+//the number of "WHITE" sqaures with a filled sqaure above it.
     let holes = 0;
     for (let r = ROW-1; r > 0; r --) {
         board[r].forEach((col, c) => {
-            if (col == VACANT && board[r - 1][c] != VACANT) {
+            if (col == "WHITE" && board[r - 1][c] != "WHITE") {
                 holes ++;
             }
         })
     }
-    this.features.holes = holes;
-}
+    this.features.holes = sigmoid(holes);
+    this.actual.holes = holes;
+  }
 }
 
