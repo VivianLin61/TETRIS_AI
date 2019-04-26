@@ -13,15 +13,17 @@ const COL = COLUMN = 10;
 const WIDTH = 200;
 const SIZE = WIDTH/COL;
 const HEIGHT= WIDTH * 2;
-const FALL_SPEED = 20;
+const FALL_SPEED = .1;
 let gameOver = false;
 let canHold = true;
-let gameBoard = Array.from(new Array(ROW),(r,i) => Array.from(new Array(COL), (c,j) => c = "WHITE"));
+let gameBoard = Array.from(new Array(ROW + 4),(r,i) => Array.from(new Array(COL), (c,j) => c = "WHITE"));
 let holdMatrix = Array.from(new Array(4), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
-let nextMatrix = Array.from(new Array(12), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
-let holdPiece;
-let nextPieces = [];
+let nextMatrix = Array.from(new Array(4), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
+let holdPiece = null;
+let nextPiece = [];
+let bag = [];
 let lines = 0;
+let moves = 0;
 
 const TETROMINOES = [
 [Z, RED],
@@ -41,17 +43,16 @@ var weights = {
     a : -0.510066,
     b : -0.35663,
     c : 0.760666,
-    d : -0.484483
+    d : -0.184483
 }
+
+  // a : -0.510066,
+  //   b : -0.35663,
+  //   c : 0.760666,
+  //   d : -0.184483
 
 //Generate intial next pieces.
-while (nextPieces.length < 3) {
-    let r = Math.floor(Math.random() * TETROMINOES.length);
-    let rPiece = new Tetromino(TETROMINOES[r][0], TETROMINOES[r][1]);
-    nextPieces.push(rPiece);
-}
-
-
+nextPiece[0] = randomPiece();
 var piece = randomPiece();
 
 drawGrid(gameBoard, tetrisCtx);
@@ -67,55 +68,62 @@ if (ai == false) {
 }
 
 // AI Functions
-function evaluation_function(features) {
-    return features.height*weights.a + features.holes*weights.b + features.cleared*weights.c + features.bumpiness*weights.d;
-}
+
 
 function decision_function() {
-    var maxScore = Number.NEGATIVE_INFINITY;
-    var move = {
+    let illegalMoves = 0;
+    let maxScore = Number.NEGATIVE_INFINITY;
+    let move = {
         rotationNum: 0,
         translationNum: 0,
     }
     for (var translation = -1; translation < 9; translation ++) {
         for (var rotation = 0; rotation < 4; rotation ++) {
             let score = action(rotation,translation);
-            if (score > maxScore) {
+            if(score === Number.NEGATIVE_INFINITY) {
+                illegalMoves ++;
+            }
+            else if (score > maxScore) {
                 maxScore = score;
                 move.rotationNum = rotation;
                 move.translationNum = translation;
             }
         }
     }
-    applyMove(move);
+
+        applyMove(move);
 }
 
 function applyMove(move) {
+
     piece.tetrominoIdx = move.rotationNum;
     piece.currTetromino = piece.tetromino[move.rotationNum];
     piece.x = move.translationNum;
-}
+    piece.calcDropPosition();
 
+}
+//if all the possible moves give game over then
 function action(rotation, translation) {
     var pieceClone = new Tetromino(piece.tetromino, piece.color);
     if (pieceClone.color == YELLOW) {
         rotation = 0;
     }
+
     let xDiff = translation - pieceClone.x;
     //check if piece is playable.
-    if (!pieceClone.collision(xDiff, -1, pieceClone.tetromino[rotation])) {
+    if (!pieceClone.collision(xDiff, 0, pieceClone.tetromino[rotation])) {
         pieceClone.currTetromino = pieceClone.tetromino[rotation];
         pieceClone.x = translation;
         let board_copy = copyMatrix(gameBoard);
         pieceClone.calcDropPosition();
         pieceClone.y = pieceClone.gY;
-        pieceClone.lock(board_copy);
-        console.log(pieceClone.actual);
-        return evaluation_function(pieceClone.features);
+        pieceClone.lock(board_copy, true);
+        return pieceClone.score;
     }
+
     return Number.NEGATIVE_INFINITY;
 }
-
+//at the end the ghost and actual positions are the same
 //Game Functions
 function draw() {
     drawGrid(gameBoard,tetrisCtx);
@@ -149,25 +157,32 @@ function drawGrid(matrix,ctx) {
  }));
 }
 
-function randomPiece() {
+function getPiece() {
     if (!gameOver) {
-        let r = Math.floor(Math.random() * TETROMINOES.length);
-        let rPiece = new Tetromino(TETROMINOES[r][0], TETROMINOES[r][1]);
-        nextPieces.push(rPiece);
+        nextPiece.push(randomPiece());
         drawGrid(nextMatrix, nextCtx);
-        for (var n = 1; n < nextPieces.length; n++) {
-            nextPieces[n].currTetromino.forEach((row,i) => row.forEach((col, j) => {
-                if (nextPieces[n].currTetromino[i][j]) {
-                   drawSquare(j, i + (4 * n) - 3, nextPieces[n].color, nextCtx);
+         nextPiece[1].currTetromino.forEach((row,i) => row.forEach((col, j) => {
+                if (nextPiece[1].currTetromino[i][j]) {
+                   drawSquare(j, i + (4 ) - 3, nextPiece[1].color, nextCtx);
                }
            }))
-
-        }
     }
 
-    return nextPieces.shift();
+    return nextPiece.shift();
 }
 
+
+function randomPiece() {
+    if (bag.length === 0) {
+        bag = [0, 1, 2, 3, 4, 5, 6];
+        bag = shuffle(bag);
+    }
+    let r = bag.pop();
+    let piece = new Tetromino(TETROMINOES[r][0], TETROMINOES[r][1]);
+    return piece;
+
+
+}
 function hold() {
     drawGrid(holdMatrix, holdCtx)
     piece.tetrominoIdx = 0;
@@ -214,7 +229,7 @@ function keyPressed() {
                 spacePressed = true;
                 piece.y = piece.gY;
                 piece.lock(gameBoard);
-                piece = randomPiece();
+                piece = getPiece();
             }
         } else if(event.keyCode == 67) {
             if (canHold)
@@ -236,12 +251,42 @@ function copyMatrix(matrix) {
 function endGame() {
     clearInterval(game);
     clearInterval(aiMove);
+
     console.log(lines);
+    return;
 }
 
 function sigmoid(t) {
     return 1/(1+Math.pow(Math.E, -t));
 }
 
-//check if bumpiness is working. start from the top and look for the first box that is not colored.
-//find all the holes not just the "WHITE" things with one thing aboWQASZDfghjkl;'
+
+function shuffle(a) {
+    for (let i = a.length -1 ; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+
+    return a;
+}
+
+
+function again() {
+gameBoard = Array.from(new Array(ROW),(r,i) => Array.from(new Array(COL), (c,j) => c = "WHITE"));
+holdMatrix = Array.from(new Array(4), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
+nextMatrix = Array.from(new Array(4), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
+holdPiece = null;
+nextPiece = [];
+bag = [];
+lines = 0;
+moves = 0;
+ nextPiece[0] = randomPiece();
+piece = randomPiece();
+
+drawGrid(gameBoard, tetrisCtx);
+drawGrid(holdMatrix, holdCtx);
+drawGrid(nextMatrix, nextCtx);
+decision_function();
+aiMove = setInterval(()=> piece.moveDown(), FALL_SPEED);
+
+}
