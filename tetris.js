@@ -13,18 +13,6 @@ const COL = COLUMN = 10;
 const WIDTH = 200;
 const SIZE = WIDTH/COL;
 const HEIGHT= WIDTH * 2;
-const FALL_SPEED = .1;
-let gameOver = false;
-let canHold = true;
-let gameBoard = Array.from(new Array(ROW + 4),(r,i) => Array.from(new Array(COL), (c,j) => c = "WHITE"));
-let holdMatrix = Array.from(new Array(4), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
-let nextMatrix = Array.from(new Array(4), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
-let holdPiece = null;
-let nextPiece = [];
-let bag = [];
-let lines = 0;
-let moves = 0;
-
 const TETROMINOES = [
 [Z, RED],
 [S, GREEN],
@@ -37,8 +25,10 @@ const TETROMINOES = [
 
 //AI Variables
 
-let ai = true;
-
+let ai = false;
+let speed = 0.1;
+let game
+let gameOver = false;
 var weights = {
     a : -0.510066,
     b : -0.35663,
@@ -46,31 +36,48 @@ var weights = {
     d : -0.184483
 }
 
-  // a : -0.510066,
-  //   b : -0.35663,
-  //   c : 0.760666,
-  //   d : -0.184483
+function initialize() {
+    gameOver = true;
+    canHold = true;
+    gameBoard = Array.from(new Array(ROW),(r,i) => Array.from(new Array(COL), (c,j) => c = "WHITE"));
+    holdMatrix = Array.from(new Array(4), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
+    nextMatrix = Array.from(new Array(4), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
+    holdPiece = null;
+    nextPiece = [];
+    bag = [];
+    lines = 0;
+    moves = 0;
 
-//Generate intial next pieces.
-nextPiece[0] = randomPiece();
-var piece = randomPiece();
+    nextPiece[0] = randomPiece();
+    piece = randomPiece();
 
-drawGrid(gameBoard, tetrisCtx);
-drawGrid(holdMatrix, holdCtx);
-drawGrid(nextMatrix, nextCtx);
+    drawGrid(gameBoard, tetrisCtx);
+    drawGrid(holdMatrix, holdCtx);
+    drawGrid(nextMatrix, nextCtx);
+}
 
-if (ai == false) {
-    var game = setInterval(()=> piece.moveDown(), FALL_SPEED);
-    draw();
-} else {
-    decision_function();
-    var aiMove = setInterval(()=> piece.moveDown(), FALL_SPEED);
+
+function run() {
+    if (ai == false) {
+        speed = 200;
+        draw();
+
+    } else {
+        speed = 0.1;
+        decision_function();
+    }
+    if (game) {
+        clearInterval(game);
+    }
+    game = setInterval(()=> {
+        displayInfo();
+        piece.moveDown()
+    }, speed);
 }
 
 // AI Functions
-
-
 function decision_function() {
+    //chooses the piece with the best score.
     let illegalMoves = 0;
     let maxScore = Number.NEGATIVE_INFINITY;
     let move = {
@@ -90,37 +97,34 @@ function decision_function() {
             }
         }
     }
-
-        applyMove(move);
+    // no more possible moves.
+    if (illegalMoves == 40) {
+        endGame();
+    }
+    applyMove(move);
 }
 
 function applyMove(move) {
-
     piece.tetrominoIdx = move.rotationNum;
     piece.currTetromino = piece.tetromino[move.rotationNum];
     piece.x = move.translationNum;
-    piece.calcDropPosition();
-
 }
-//if all the possible moves give game over then
+
 function action(rotation, translation) {
     var pieceClone = new Tetromino(piece.tetromino, piece.color);
     if (pieceClone.color == YELLOW) {
         rotation = 0;
     }
-
-    let xDiff = translation - pieceClone.x;
+    let xMove = translation - pieceClone.x;
     //check if piece is playable.
-    if (!pieceClone.collision(xDiff, 0, pieceClone.tetromino[rotation])) {
+    if (!pieceClone.collision(xMove, 0, pieceClone.tetromino[rotation])) {
         pieceClone.currTetromino = pieceClone.tetromino[rotation];
         pieceClone.x = translation;
         let board_copy = copyMatrix(gameBoard);
-        pieceClone.calcDropPosition();
-        pieceClone.y = pieceClone.gY;
+        pieceClone.y = pieceClone.calcDropPosition();
         pieceClone.lock(board_copy, true);
         return pieceClone.score;
     }
-
     return Number.NEGATIVE_INFINITY;
 }
 //at the end the ghost and actual positions are the same
@@ -139,7 +143,6 @@ function drawSquare(x,y,color, ctx){
     ctx.strokeStyle = "BLACK";
     ctx.lineWidth = 1;
     ctx.strokeRect(x*SIZE,y*SIZE,SIZE,SIZE);
-
 }
 
 function drawGhost(x,y,color,ctx) {
@@ -147,31 +150,29 @@ function drawGhost(x,y,color,ctx) {
     ctx.strokeStyle = color;
     ctx.lineWidth = 3;
     if (color == "WHITE")
-     ctx.strokeStyle = "BLACK";
-    ctx.strokeRect(x*SIZE,y*SIZE,SIZE,SIZE);
+       ctx.strokeStyle = "BLACK";
+   ctx.strokeRect(x*SIZE,y*SIZE,SIZE,SIZE);
 }
 
 function drawGrid(matrix,ctx) {
     matrix.forEach((row, i) => row.forEach((col, j) => {
-     drawSquare(j, i, matrix[i][j], ctx);
- }));
+       drawSquare(j, i, matrix[i][j], ctx);
+   }));
 }
 
 function getPiece() {
     if (!gameOver) {
         nextPiece.push(randomPiece());
         drawGrid(nextMatrix, nextCtx);
-         nextPiece[1].currTetromino.forEach((row,i) => row.forEach((col, j) => {
-                if (nextPiece[1].currTetromino[i][j]) {
-                   drawSquare(j, i + (4 ) - 3, nextPiece[1].color, nextCtx);
-               }
-           }))
+        nextPiece[1].currTetromino.forEach((row,i) => row.forEach((col, j) => {
+            if (nextPiece[1].currTetromino[i][j]) {
+             drawSquare(j, i + (4 ) - 3, nextPiece[1].color, nextCtx);
+         }
+     }))
     }
-
     return nextPiece.shift();
 }
-
-
+//tetris bag random generator
 function randomPiece() {
     if (bag.length === 0) {
         bag = [0, 1, 2, 3, 4, 5, 6];
@@ -180,17 +181,14 @@ function randomPiece() {
     let r = bag.pop();
     let piece = new Tetromino(TETROMINOES[r][0], TETROMINOES[r][1]);
     return piece;
-
-
 }
+
 function hold() {
     drawGrid(holdMatrix, holdCtx)
     piece.tetrominoIdx = 0;
     piece.currTetromino = piece.tetromino[0];
     if (holdPiece) {
-        temp = holdPiece;
-        holdPiece = piece;
-        piece = temp;
+        [piece, holdPiece] = [holdPiece, piece]
     } else {
         holdPiece = piece;
         piece = randomPiece();
@@ -203,6 +201,10 @@ function hold() {
     canHold = false;
 }
 
+function endGame() {
+    clearInterval(game);
+    console.log(lines);
+}
 
 document.addEventListener("keydown", keyPressed);
 document.addEventListener("keyup", keyReleased);
@@ -215,6 +217,14 @@ function keyReleased() {
     }
 }
 function keyPressed() {
+    if (event.keyCode == 65) {
+        toggleAI();
+    }
+    if (event.keyCode == 83) {
+        initialize();
+        gameOver = false;
+        run();
+    }
     if (ai == false && !gameOver) {
         if (event.keyCode === 37) {
             piece.moveLeft();
@@ -238,7 +248,18 @@ function keyPressed() {
     }
 }
 
+function toggleAI() {
+    if (ai == true) {
+        ai = false;
+    } else {
+        ai = true;
+    }
+    run();
+}
 
+function displayInfo() {
+    document.getElementById("lines").innerHTML = lines;
+}
 //HELPER Functions
 function copyMatrix(matrix) {
     let newArray = [];
@@ -248,45 +269,16 @@ function copyMatrix(matrix) {
     return newArray;
 }
 
-function endGame() {
-    clearInterval(game);
-    clearInterval(aiMove);
-
-    console.log(lines);
-    return;
-}
-
 function sigmoid(t) {
     return 1/(1+Math.pow(Math.E, -t));
 }
-
 
 function shuffle(a) {
     for (let i = a.length -1 ; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
     }
-
     return a;
 }
 
 
-function again() {
-gameBoard = Array.from(new Array(ROW),(r,i) => Array.from(new Array(COL), (c,j) => c = "WHITE"));
-holdMatrix = Array.from(new Array(4), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
-nextMatrix = Array.from(new Array(4), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
-holdPiece = null;
-nextPiece = [];
-bag = [];
-lines = 0;
-moves = 0;
- nextPiece[0] = randomPiece();
-piece = randomPiece();
-
-drawGrid(gameBoard, tetrisCtx);
-drawGrid(holdMatrix, holdCtx);
-drawGrid(nextMatrix, nextCtx);
-decision_function();
-aiMove = setInterval(()=> piece.moveDown(), FALL_SPEED);
-
-}
