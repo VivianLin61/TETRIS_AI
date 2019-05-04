@@ -26,14 +26,25 @@ const TETROMINOES = [
 //AI Variables
 
 let ai = false;
+let ga = true;
 let speed = 0.1;
-let game
+let gameplay;
+let moves;
 let gameOver = false;
-var weights = {
+let weights = {
     a : -0.510066,
     b : -0.35663,
     c : 0.760666,
     d : -0.184483
+}
+
+function load() {
+    if (ga == true){
+        ai = true;
+        setup();
+    } else {
+         initialize();
+    }
 }
 
 function initialize() {
@@ -54,8 +65,8 @@ function initialize() {
     drawGrid(gameBoard, tetrisCtx);
     drawGrid(holdMatrix, holdCtx);
     drawGrid(nextMatrix, nextCtx);
-}
 
+}
 
 function run() {
     if (ai == false) {
@@ -63,13 +74,13 @@ function run() {
         draw();
 
     } else {
-        speed = 0.1;
+        speed = 0.5;
         decision_function();
     }
-    if (game) {
-        clearInterval(game);
+    if (gameplay) {
+        clearInterval(gameplay);
     }
-    game = setInterval(()=> {
+    gameplay = setInterval(()=> {
         displayInfo();
         piece.moveDown()
     }, speed);
@@ -127,14 +138,18 @@ function action(rotation, translation) {
     }
     return Number.NEGATIVE_INFINITY;
 }
-//at the end the ghost and actual positions are the same
+
 //Game Functions
 function draw() {
+    if (ga == true) {
+        population.games[num_of_games].update();
+    }
     drawGrid(gameBoard,tetrisCtx);
     if (!gameOver) {
-        piece.showGhost();
+     piece.showGhost();
         requestAnimationFrame(draw);
     }
+
 }
 
 function drawSquare(x,y,color, ctx){
@@ -202,7 +217,8 @@ function hold() {
 }
 
 function endGame() {
-    clearInterval(game);
+    clearInterval(gameplay);
+    gameOver = true;
     console.log(lines);
 }
 
@@ -259,7 +275,13 @@ function toggleAI() {
 
 function displayInfo() {
     document.getElementById("lines").innerHTML = lines;
+    document.getElementById("generation").innerHTML = generation;
+    document.getElementById("max_fit").innerHTML = maxFitness
+    document.getElementById("game_number").innerHTML = num_of_games;
+    document.getElementById("moves").innerHTML = moves;
+    //document.getElementById("maxfit").innerHTML = maxFit;
 }
+
 //HELPER Functions
 function copyMatrix(matrix) {
     let newArray = [];
@@ -280,5 +302,4 @@ function shuffle(a) {
     }
     return a;
 }
-
 

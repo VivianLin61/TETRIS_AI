@@ -64,6 +64,7 @@ class Tetromino {
     } else {
       this.lock(gameBoard);
       if (!gameOver) {
+        moves++;
         piece = getPiece();
         if (ai == true )
           decision_function();
@@ -174,7 +175,6 @@ collision(x,y,piece,ghost) {
 
      }
     lock(board, clone) {
-
       for (let r = 0; r < this.currTetromino.length; r++) {
         for (let c = 0; c < this.currTetromino.length; c++) {
           if (this.currTetromino[r][c]) {
@@ -182,7 +182,6 @@ collision(x,y,piece,ghost) {
               if (clone == true) {
                 this.score = Number.NEGATIVE_INFINITY;
               } else {
-                gameOver = true;
                 endGame();
               }
                 return;

@@ -27,15 +27,16 @@
             left:50%;
             margin-left: 120px
         }
+
         button {
             display: block;
         }
+
         #container {
             position: absolute;
             top:160px;
             height: 300px;
-
-           left:50%;
+            left:50%;
             margin-left: 120px;
             width: 400px;
             display: block;
@@ -46,7 +47,7 @@
 
     </style>
 </head>
-<body onload = "initialize();">
+<body onload = "load();">
    <div class="title">TETRIS</div>
    <div class="title">Press S to Start </div>
     <canvas id="tetris" width="200" height="400"></canvas>
@@ -55,8 +56,16 @@
     <script src="tetrominoes.js"></script>
     <script src="tetromino.js"></script>
     <script src="tetris.js"></script>
+    <script src="ga.js"></script>
+    <script src="game.js"></script>
     <div id="container">
         <div>Lines Cleared: <span id="lines">0</span></div>
+        <div>Generation: <span id="generation">0</span>/20</div>
+        <div>MaxFit: <span id="max_fit">0</span></div>
+        <div>Game Number: <span id="game_number">0</span>/50</div>
+        <div>Moves: <span id="moves">0</span></div>
+
+
 
     </div>
 </body>

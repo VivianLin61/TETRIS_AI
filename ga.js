@@ -1,3 +1,37 @@
+let generation = 1;
+let maxFitness = 0;
+let num_of_games = 0;
+
+function setup() {
+  population = new Population();
+  population.games[num_of_games].startGame();
+  genetic_algorithm();
+}
+
+function genetic_algorithm() {
+   population.games[num_of_games].update();
+    if (population.games[num_of_games].gameOver == true) {
+      moves = 0;
+      num_of_games ++;
+      population.games[num_of_games].startGame();
+    }
+    //  if (num_of_games > 49) {
+    //   population.evaluate();
+    //   population.selection();
+    //   num_of_games = 0;
+    //   population.games[num_of_games].startGame();
+    //   generation ++;
+    // }
+
+  if (num_of_games < 5) {
+      myReq = requestAnimationFrame(genetic_algorithm);
+
+  }
+
+}
+
+
+
 function Population() {
     this.games = [];
     this.popsize = 50;
@@ -17,22 +51,21 @@ function Population() {
             if (this.games[i].fitness > maxfit) {
                 maxfit = this.games[i].fitness;
             }
-        }}
-
+        }
+        maxFitness = maxfit;
 
         for(var i = 0; i < this.popsize; i++) {
             this.games[i].fitness /= maxfit;
         }
 
           this.matingpool = [];
-    // Take rockets fitness make in to scale of 1 to 100
-    // A rocket with high fitness will highly likely will be in the mating pool
     for (var i = 0; i < this.popsize; i++) {
       var n = this.games[i].fitness * 100;
       for (var j = 0; j < n; j++) {
         this.matingpool.push(this.games[i]);
       }
     }
+  }
   // Selects appropriate genes for child
   this.selection = function() {
     var newGames = [];
@@ -44,18 +77,11 @@ function Population() {
       var child = parentA.crossover(parentB);
       child.mutation();
       // Creates new rocket with child dna
-      newRockets[i] = new Game(child);
+      newGames[i] = new Game(child);
     }
     // This instance of rockets are the new rockets
-    this.rockets = newRockets;
-  }
-
-
-  this.run = function() {
-    for (var i = 0; i < this.popsize; i++) {
-        //play game
-    }
-  }
+    this.games = newGames
+     }
 
 }
 
@@ -69,52 +95,36 @@ function DNA(genes) {
   }
   // If no genes just create random dna
   else {
-    this.genes = [];
-    for (var i = 0; i < lifespan; i++) {
-      // Gives random vectors
-      this.genes[i] = {
-        a : - Math.random();
-        b : - Math.random();
-        c : Math.random();
-        d : -Math.random();
+      this.genes = {
+        a : - Math.random(),
+        b : - Math.random(),
+        c : Math.random(),
+        d : -Math.random(),
       }
-      // Sets maximum force of vector to be applied to a rocket
+    }
 
-    }
-  }
-  // Performs a crossover with another member of the species
   this.crossover = function(partner) {
-    var newgenes = [];
-    // Picks random midpoint
-    var mid = floor(random(this.genes.length));
-    for (var i = 0; i < this.genes.length; i++) {
-      // If i is greater than mid the new gene should come from this partner
-      if (i > mid) {
-        newgenes[i] = this.genes[i];
-      }
-      // If i < mid new gene should come from other partners gene's
-      else {
-        newgenes[i] = partner.genes[i];
-      }
+    var newgenes = {
+      a: (partner.dna.genes.a + this.genes.a)/2,
+      b: (partner.dna.genes.b + this.genes.b)/2,
+      c: (partner.dna.genes.c + this.genes.c)/2,
+      d: (partner.dna.genes.d + this.genes.d)/2
     }
-    // Gives DNA object an array
+
     return new DNA(newgenes);
   }
 
   // Adds random mutation to the genes to add variance.
   this.mutation = function() {
-    for (var i = 0; i < this.genes.length; i++) {
-      // if random number less than 0.01, new gene is then random vector
       if (random(1) < 0.01) {
-        this.genes[i] = {
-            a : - Math.random();
-            b : - Math.random();
-            c : Math.random();
-            d : -Math.random();
+    this.genes = {
+       a : - Math.random(),
+       b : - Math.random(),
+       c : Math.random(),
+       d : -Math.random(),
 
-        }
-      }
     }
   }
+}
 
 }
