@@ -31,7 +31,7 @@ let gameplay;
 let gameOver = false;
 
 function load() {
-    if (ga == true){
+    if (ga == false){
         ai = true;
         setup();
     } else {
@@ -65,6 +65,7 @@ function run() {
 
     if (ai == false) {
         speed = 200;
+         weights = weights = Object.assign({}, best_weights);
         draw();
 
     } else {

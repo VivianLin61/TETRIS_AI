@@ -1,12 +1,30 @@
 let generation = 1;
 let maxFitness = 0;
 let num_of_games = 1;
+let mutation_rate = 0.1;
 let best_weights = {
-  a : 0,
-  b : 0,
-  c : 0,
-  d : 0
+  a : -0.612107043230623,
+  b : -0.8379243317418958,
+  c : 0.323387373920562,
+  d : -0.3229463534592629
+
 }
+
+// //Max Fit 317
+// a : -0.48949459378873994,
+//   b : -0.8745234125736482,
+//   c : 0.3223501755056043,
+//   d : -0.29128689535437063
+
+// //Max Fit 328
+// Height:-0.612107043230623
+// Holes: -0.8379243317418958
+// Cleared: 0.323387373920562
+// Bumpiness: -0.3229463534592629
+
+
+
+
 
 let weights = {
   a : 0,
@@ -16,7 +34,7 @@ let weights = {
 }
 
 const MAX_GENERATION = 5;
-const POPSIZE = 5;
+const POPSIZE = 50;
 
 function setup() {
   population = new Population();
@@ -41,16 +59,14 @@ function genetic_algorithm() {
     generation ++;
   }
 
-  if (generation < MAX_GENERATION) {
     requestAnimationFrame(genetic_algorithm);
-  }
+
 }
 
 //POPULATION OBJECT
 function Population() {
   this.games = [];
 
-  this.matingpool = [];
 
   for (var i = 0; i < POPSIZE; i++) {
     this.games[i] = new Game();
@@ -68,17 +84,28 @@ function Population() {
       }
     }
     maxFitness = maxfit;
-    for(var i = 0; i < POPSIZE; i++) {
-      this.games[i].fitness /= maxfit;
+
+    let sum_of_scores = 0;
+    for (var i = 0; i < POPSIZE; i++) {
+      sum_of_scores += this.games[i].fitness
     }
 
-    this.matingpool = [];
     for (var i = 0; i < POPSIZE; i++) {
-      var n = this.games[i].fitness * 100;
-      for (var j = 0; j < n; j++) {
-        this.matingpool.push(this.games[i]);
-      }
+      this.games[i].prob = this.games[i].fitness/sum_of_scores;
     }
+  }
+
+
+  this.pickOne = function(list) {
+    var index = 0;
+    var r = Math.random();
+
+    while( r > 0) {
+      r = r - list[index].prob;
+      index ++;
+    }
+    index --;
+    return list[index];
   }
 
   // Selects appropriate genes for child
@@ -86,8 +113,8 @@ function Population() {
     var newGames = [];
     for (var i = 0; i < this.games.length; i++) {
       // Picks random dna
-      var parentA = this.matingpool[Math.floor(Math.random() * this.matingpool.length)].dna;
-      var parentB = this.matingpool[Math.floor(Math.random() * this.matingpool.length)].dna;
+      var parentA = this.pickOne(this.games).dna;
+      var parentB = this.pickOne(this.games).dna;
       // Creates child by using crossover function
       var child = parentA.crossover(parentB);
       child.mutation();
@@ -111,7 +138,7 @@ function DNA(genes) {
       a : - Math.random(),
       b : - Math.random(),
       c : Math.random(),
-      d : -Math.random(),
+      d : -Math.random()
     }
   }
 
@@ -127,17 +154,20 @@ function DNA(genes) {
   }
   // Adds random mutation to the genes to add variance.
   this.mutation = function() {
-    if (Math.random() < 0.01) {
-      this.genes = {
-       a : - Math.random(),
-       b : - Math.random(),
-       c : Math.random(),
-       d : -Math.random(),
-
+    if (Math.random() < mutation_rate) {
+      this.genes.a = this.genes.a + Math.random() - 0.5;
+     }
+    if (Math.random() < mutation_rate) {
+      this.genes.b = this.genes.b + Math.random() - 0.5;
+     }
+    if (Math.random() < mutation_rate) {
+      this.genes.c = this.genes.c + Math.random() - 0.5;
+     }
+    if (Math.random() < mutation_rate) {
+      this.genes.d = this.genes.d + Math.random() - 0.5;
      }
    }
  }
-}
 
 //GAME OBJECT
 function Game(dna) {
@@ -148,6 +178,7 @@ function Game(dna) {
     }
 
     this.fitness = 0;
+    this.prob = 0;
     this.lines = 0;
     this.game_score = 0;
     this.endGame = false;

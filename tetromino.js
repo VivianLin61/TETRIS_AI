@@ -170,9 +170,7 @@ checkLines() {
      linesCleared ++;
    }
  }
-
-
-
+//updates the game_score
  switch(linesCleared) {
   case 1:
     game_score += 1;
