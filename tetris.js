@@ -271,6 +271,7 @@ function toggleAI() {
 
 function displayInfo() {
     document.getElementById("lines").innerHTML = lines;
+    document.getElementById("game_score").innerHTML = game_score;
     document.getElementById("generation").innerHTML = generation;
     document.getElementById("max_fit").innerHTML = maxFitness
     document.getElementById("game_number").innerHTML = num_of_games;

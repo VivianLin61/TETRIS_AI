@@ -40,6 +40,11 @@
             width: 400px;
             display: block;
         }
+
+        .genes {
+            text-indent: 20px;
+
+        }
     </style>
 </head>
 <body onload = "load();">
@@ -57,15 +62,16 @@
 
     <div id="container">
         <div>Lines Cleared: <span id="lines">0</span></div>
+        <div>Score: <span id="game_score">0</span></div>
         <div>Generation: <span id="generation">0</span>/<span id="max_generation"></span></div>
         <div>MaxFit: <span id="max_fit">0</span></div>
         <div>Game Number: <span id="game_number">0</span>/<span id="max_games"></span></div>
         <div>Moves: <span id="moves">0</span></div>
         <div>Best Genes: {
-            <div>Height:<span id="height"></span> </div>
-            <div>Holes: <span id="holes"> </span></div>
-            <div>Cleared: <span id="cleared"> </span></div>
-            <div>Bumpiness: <span id="bumpiness"> </span></div>
+            <div class="genes" >Height:<span id="height"></span> </div>
+            <div class="genes" >Holes: <span id="holes"> </span></div>
+            <div class="genes" >Cleared: <span id="cleared"> </span></div>
+            <div class="genes" >Bumpiness: <span id="bumpiness"> </span></div>
         } </div>
     </div>
 

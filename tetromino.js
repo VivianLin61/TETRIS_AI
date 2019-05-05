@@ -151,12 +151,11 @@ collision(x,y,piece,ghost) {
         return true;
     }
   }
-
   return false;
-
 }
 
 checkLines() {
+  let linesCleared = 0;
   for (var r = 0; r < ROW; r++) {
     let filled = 0;
     for (var c = 0; c < COL; c ++) {
@@ -168,8 +167,27 @@ checkLines() {
      this.clearLine(r);
      r--;
      lines ++;
+     linesCleared ++;
    }
  }
+
+
+
+ switch(linesCleared) {
+  case 1:
+    game_score += 1;
+    break;
+  case 2:
+    game_score += 3;
+     break;
+  case 3:
+    game_score += 6;
+     break;
+  case 4:
+    game_score += 12;
+     break;
+ }
+
  drawGrid(gameBoard, tetrisCtx);
 
 }

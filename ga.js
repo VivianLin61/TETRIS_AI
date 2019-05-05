@@ -149,17 +149,19 @@ function Game(dna) {
 
     this.fitness = 0;
     this.lines = 0;
+    this.game_score = 0;
     this.endGame = false;
 
     this.update = function() {
         if (moves == 500 || gameOver == true){
             this.lines = lines;
+            this.game_score = game_score;
             this.endGame = true;
         }
     }
 
     this.calcFitness = function() {
-        this.fitness = this.lines;
+        this.fitness = this.game_score;
     }
 
     this.startGame = function(gene) {
