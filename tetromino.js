@@ -225,7 +225,7 @@ calcFeatures(board) {
       break;
     }
   }
-  this.features.height = sigmoid(height);
+  this.features.height = height;
   this.actual.height = height;
 
  //the sum of the absolute differeces between the heights of adjacent columns.
@@ -242,7 +242,7 @@ calcFeatures(board) {
   for (let j = 0; j < colHeights.length - 1; j++) {
     bumpiness += Math.abs(colHeights[j] - colHeights[j+1]);
   }
-  this.features.bumpiness = sigmoid(bumpiness);
+  this.features.bumpiness = bumpiness * 5;
   this.actual.bumpiness= bumpiness;
 
   //the number of empty sqaures with a filled sqaure above it.
@@ -254,7 +254,7 @@ calcFeatures(board) {
       }
     })
   }
-  this.features.holes = sigmoid(holes);
+  this.features.holes = holes * 5;
   this.actual.holes = holes;
 
   //Number of lines cleared
@@ -270,7 +270,7 @@ calcFeatures(board) {
         linesCleared ++;
       }
     }
-  this.features.cleared = linesCleared/4
+  this.features.cleared = linesCleared * 5;
   this.actual.cleared = linesCleared;
 }
   //linear combination of the features and their weights.

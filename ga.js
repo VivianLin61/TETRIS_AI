@@ -3,28 +3,11 @@ let maxFitness = 0;
 let num_of_games = 1;
 let mutation_rate = 0.1;
 let best_weights = {
-  a : -0.612107043230623,
-  b : -0.8379243317418958,
-  c : 0.323387373920562,
-  d : -0.3229463534592629
-
+  a : 0,
+  b : 0,
+  c : 0,
+  d : 0
 }
-
-// //Max Fit 317
-// a : -0.48949459378873994,
-//   b : -0.8745234125736482,
-//   c : 0.3223501755056043,
-//   d : -0.29128689535437063
-
-// //Max Fit 328
-// Height:-0.612107043230623
-// Holes: -0.8379243317418958
-// Cleared: 0.323387373920562
-// Bumpiness: -0.3229463534592629
-
-
-
-
 
 let weights = {
   a : 0,
@@ -33,7 +16,7 @@ let weights = {
   d : 0
 }
 
-const MAX_GENERATION = 5;
+const MAX_GENERATION = Infinity;
 const POPSIZE = 50;
 
 function setup() {
@@ -113,10 +96,10 @@ function Population() {
     var newGames = [];
     for (var i = 0; i < this.games.length; i++) {
       // Picks random dna
-      var parentA = this.pickOne(this.games).dna;
-      var parentB = this.pickOne(this.games).dna;
+      var parentA = this.pickOne(this.games);
+      var parentB = this.pickOne(this.games);
       // Creates child by using crossover function
-      var child = parentA.crossover(parentB);
+      var child = parentA.dna.crossover(parentB.dna, parentA, parentB);
       child.mutation();
       // Creates new rocket with child dna
       newGames[i] = new Game(child);
@@ -135,36 +118,44 @@ function DNA(genes) {
   // If no genes just create random dna
   else {
     this.genes = {
-      a : - Math.random(),
-      b : - Math.random(),
-      c : Math.random(),
-      d : -Math.random()
+      a : Math.random() - 0.5,
+      b : Math.random() -0.5,
+      c : Math.random() - 0.5,
+      d : Math.random() -0.5
     }
   }
 
-  this.crossover = function(partner) {
-    var newgenes = {
-      a: (partner.genes.a + this.genes.a)/2,
-      b: (partner.genes.b + this.genes.b)/2,
-      c: (partner.genes.c + this.genes.c)/2,
-      d: (partner.genes.d + this.genes.d)/2
+  this.crossover = function(partner, pA, pB) {
+    //which ever has a bigger fitness
+    //if A has a larger fitness it's genes will be close to A.
+    let alpha = this.genes;
+    let beta = partner.genes;
+    if ( pA.fitness < pB.fitness) {
+      alpha = partner.genes;
+      beta = this.genes;
     }
+     var newgenes = {
+     a: (alpha.a * .9 + beta.a * .1),
+     b: (alpha.b * .9 + beta.b * .1),
+     c: (alpha.c * .9 + beta.c * .1),
+     d: (alpha.d * .9 + beta.d * .1)
+   }
 
     return new DNA(newgenes);
   }
   // Adds random mutation to the genes to add variance.
   this.mutation = function() {
     if (Math.random() < mutation_rate) {
-      this.genes.a = this.genes.a + Math.random() - 0.5;
+      this.genes.a = this.genes.a + Math.random() * 0.4 ;
      }
     if (Math.random() < mutation_rate) {
-      this.genes.b = this.genes.b + Math.random() - 0.5;
+      this.genes.b = this.genes.b + Math.random() * 0.4;
      }
     if (Math.random() < mutation_rate) {
-      this.genes.c = this.genes.c + Math.random() - 0.5;
+      this.genes.c = this.genes.c + Math.random() * 0.4 ;
      }
     if (Math.random() < mutation_rate) {
-      this.genes.d = this.genes.d + Math.random() - 0.5;
+      this.genes.d = this.genes.d + Math.random() * 0.4 ;
      }
    }
  }
