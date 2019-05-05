@@ -24,19 +24,11 @@ const TETROMINOES = [
 ];
 
 //AI Variables
-
 let ai = false;
-let ga = true;
-let speed = 0.1;
+let ga = geneticAlgorithm = true;
+let speed;
 let gameplay;
-let moves;
 let gameOver = false;
-let weights = {
-    a : -0.510066,
-    b : -0.35663,
-    c : 0.760666,
-    d : -0.184483
-}
 
 function load() {
     if (ga == true){
@@ -58,23 +50,25 @@ function initialize() {
     bag = [];
     lines = 0;
     moves = 0;
-
-    nextPiece[0] = randomPiece();
-    piece = randomPiece();
+    //score used to calculate the fitness of each game.
+    game_score = 0;
 
     drawGrid(gameBoard, tetrisCtx);
     drawGrid(holdMatrix, holdCtx);
     drawGrid(nextMatrix, nextCtx);
 
+    nextPiece[0] = randomPiece();
 }
 
 function run() {
+    piece = getPiece();
+
     if (ai == false) {
         speed = 200;
         draw();
 
     } else {
-        speed = 0.5;
+        speed = 0.1;
         decision_function();
     }
     if (gameplay) {
@@ -87,14 +81,15 @@ function run() {
 }
 
 // AI Functions
+//chooses the piece with the best score.
 function decision_function() {
-    //chooses the piece with the best score.
     let illegalMoves = 0;
     let maxScore = Number.NEGATIVE_INFINITY;
     let move = {
-        rotationNum: 0,
-        translationNum: 0,
+        rotation: 0,
+        translation: 0,
     }
+//tests all possible moves to find the best move.
     for (var translation = -1; translation < 9; translation ++) {
         for (var rotation = 0; rotation < 4; rotation ++) {
             let score = action(rotation,translation);
@@ -103,22 +98,22 @@ function decision_function() {
             }
             else if (score > maxScore) {
                 maxScore = score;
-                move.rotationNum = rotation;
-                move.translationNum = translation;
+                move.rotation = rotation;
+                move.translation = translation;
             }
         }
     }
-    // no more possible moves.
+    //Mo more possible moves.
     if (illegalMoves == 40) {
         endGame();
     }
-    applyMove(move);
+    makeMove(move);
 }
 
-function applyMove(move) {
-    piece.tetrominoIdx = move.rotationNum;
-    piece.currTetromino = piece.tetromino[move.rotationNum];
-    piece.x = move.translationNum;
+function makeMove(move) {
+    piece.tetrominoIdx = move.rotation;
+    piece.currTetromino = piece.tetromino[move.rotation];
+    piece.x = move.translation;
 }
 
 function action(rotation, translation) {
@@ -141,15 +136,11 @@ function action(rotation, translation) {
 
 //Game Functions
 function draw() {
-    if (ga == true) {
-        population.games[num_of_games].update();
-    }
     drawGrid(gameBoard,tetrisCtx);
     if (!gameOver) {
      piece.showGhost();
         requestAnimationFrame(draw);
     }
-
 }
 
 function drawSquare(x,y,color, ctx){
@@ -178,16 +169,18 @@ function drawGrid(matrix,ctx) {
 function getPiece() {
     if (!gameOver) {
         nextPiece.push(randomPiece());
+        //Draw next piece
         drawGrid(nextMatrix, nextCtx);
         nextPiece[1].currTetromino.forEach((row,i) => row.forEach((col, j) => {
             if (nextPiece[1].currTetromino[i][j]) {
-             drawSquare(j, i + (4 ) - 3, nextPiece[1].color, nextCtx);
+             drawSquare(j, i + 1, nextPiece[1].color, nextCtx);
          }
      }))
     }
     return nextPiece.shift();
 }
-//tetris bag random generator
+
+//Tetris bag random generator
 function randomPiece() {
     if (bag.length === 0) {
         bag = [0, 1, 2, 3, 4, 5, 6];
@@ -219,7 +212,7 @@ function hold() {
 function endGame() {
     clearInterval(gameplay);
     gameOver = true;
-    console.log(lines);
+    //console.log(lines);
 }
 
 document.addEventListener("keydown", keyPressed);
@@ -232,10 +225,13 @@ function keyReleased() {
         spacePressed = false;
     }
 }
+
 function keyPressed() {
+    //A Pressed
     if (event.keyCode == 65) {
         toggleAI();
     }
+    //S Pressed Start Game
     if (event.keyCode == 83) {
         initialize();
         gameOver = false;
@@ -279,7 +275,12 @@ function displayInfo() {
     document.getElementById("max_fit").innerHTML = maxFitness
     document.getElementById("game_number").innerHTML = num_of_games;
     document.getElementById("moves").innerHTML = moves;
-    //document.getElementById("maxfit").innerHTML = maxFit;
+    document.getElementById("max_generation").innerHTML = MAX_GENERATION;
+    document.getElementById("max_games").innerHTML = POPSIZE;
+    document.getElementById("height").innerHTML =  best_weights.a;
+    document.getElementById("holes").innerHTML = best_weights.b;
+    document.getElementById("cleared").innerHTML = best_weights.c;
+    document.getElementById("bumpiness").innerHTML = best_weights.d;
 }
 
 //HELPER Functions

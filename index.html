@@ -31,7 +31,6 @@
         button {
             display: block;
         }
-
         #container {
             position: absolute;
             top:160px;
@@ -40,33 +39,35 @@
             margin-left: 120px;
             width: 400px;
             display: block;
-            border: 1px solid black;
         }
-
-
-
     </style>
 </head>
 <body onload = "load();">
    <div class="title">TETRIS</div>
    <div class="title">Press S to Start </div>
+
     <canvas id="tetris" width="200" height="400"></canvas>
     <canvas id="hold" width="100" height="100"></canvas>
     <canvas id="next" width="100" height="100"></canvas>
+
     <script src="tetrominoes.js"></script>
     <script src="tetromino.js"></script>
     <script src="tetris.js"></script>
     <script src="ga.js"></script>
-    <script src="game.js"></script>
+
     <div id="container">
         <div>Lines Cleared: <span id="lines">0</span></div>
-        <div>Generation: <span id="generation">0</span>/20</div>
+        <div>Generation: <span id="generation">0</span>/<span id="max_generation"></span></div>
         <div>MaxFit: <span id="max_fit">0</span></div>
-        <div>Game Number: <span id="game_number">0</span>/50</div>
+        <div>Game Number: <span id="game_number">0</span>/<span id="max_games"></span></div>
         <div>Moves: <span id="moves">0</span></div>
-
-
-
+        <div>Best Genes: {
+            <div>Height:<span id="height"></span> </div>
+            <div>Holes: <span id="holes"> </span></div>
+            <div>Cleared: <span id="cleared"> </span></div>
+            <div>Bumpiness: <span id="bumpiness"> </span></div>
+        } </div>
     </div>
+
 </body>
 </html>
