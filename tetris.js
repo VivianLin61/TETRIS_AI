@@ -1,4 +1,3 @@
-
 //COLORS
 RED = "red"; GREEN = "green"; PURPLE = "#eb42f4"; YELLOW = "#f4d942"; ORANGE ="#d1720c"; CYAN = "#41e2f4"; BLUE = "#0b5ed1";
 //GAME Variables
@@ -31,7 +30,7 @@ let gameplay;
 let gameOver = false;
 
 function load() {
-    if (ga == true){
+    if (ga == false){
         ai = true;
         setup();
     } else {
@@ -65,6 +64,7 @@ function run() {
 
     if (ai == false) {
         speed = 200;
+         weights = weights = Object.assign({}, best_weights);
         draw();
 
     } else {
@@ -304,4 +304,3 @@ function shuffle(a) {
     }
     return a;
 }
-
