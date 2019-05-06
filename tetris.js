@@ -24,7 +24,7 @@ const TETROMINOES = [
 
 //AI Variables
 let ai = false;
-let ga = geneticAlgorithm = false;
+let ga = geneticAlgorithm = true;
 let speed;
 let gameplay;
 let gameOver = false;
