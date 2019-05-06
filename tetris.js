@@ -1,4 +1,3 @@
-
 //COLORS
 RED = "red"; GREEN = "green"; PURPLE = "#eb42f4"; YELLOW = "#f4d942"; ORANGE ="#d1720c"; CYAN = "#41e2f4"; BLUE = "#0b5ed1";
 //GAME Variables
@@ -25,13 +24,13 @@ const TETROMINOES = [
 
 //AI Variables
 let ai = false;
-let ga = geneticAlgorithm = true;
+let ga = geneticAlgorithm = false;
 let speed;
 let gameplay;
 let gameOver = false;
 
 function load() {
-    if (ga == false){
+    if (ga == true){
         ai = true;
         setup();
     } else {
@@ -184,6 +183,7 @@ function getPiece() {
 //Tetris bag random generator
 function randomPiece() {
     if (bag.length === 0) {
+        //to make the ai train faster i increased the probability of pieces "z and s" because these are the hardest pieces to place. This decreases each game length and learning time.
         bag = [0, 1, 2, 3, 4, 5, 6];
         bag = shuffle(bag);
     }
@@ -235,7 +235,7 @@ function keyPressed() {
     //S Pressed Start Game
     if (event.keyCode == 83) {
         initialize();
-        gameOver = false;
+        gameOver = false
         run();
     }
     if (ai == false && !gameOver) {
@@ -277,12 +277,15 @@ function displayInfo() {
     document.getElementById("max_fit").innerHTML = maxFitness
     document.getElementById("game_number").innerHTML = num_of_games;
     document.getElementById("moves").innerHTML = moves;
-    document.getElementById("max_generation").innerHTML = MAX_GENERATION;
     document.getElementById("max_games").innerHTML = POPSIZE;
     document.getElementById("height").innerHTML =  best_weights.a;
     document.getElementById("holes").innerHTML = best_weights.b;
     document.getElementById("cleared").innerHTML = best_weights.c;
     document.getElementById("bumpiness").innerHTML = best_weights.d;
+     document.getElementById("c.height").innerHTML =  weights.a;
+    document.getElementById("c.holes").innerHTML = weights.b;
+    document.getElementById("c.cleared").innerHTML = weights.c;
+    document.getElementById("c.bumpiness").innerHTML = weights.d;
 }
 
 //HELPER Functions
@@ -294,15 +297,10 @@ function copyMatrix(matrix) {
     return newArray;
 }
 
-function sigmoid(t) {
-    return 1/(1+Math.pow(Math.E, -t));
-}
-
 function shuffle(a) {
     for (let i = a.length -1 ; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-}
-
+ }
