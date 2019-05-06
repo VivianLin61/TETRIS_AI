@@ -9,12 +9,6 @@ class Tetromino {
       cleared : 0, //maximize
       bumpiness : 0 //minimize
     }
-    this.actual = {
-      height : 0,
-      holes : 0,
-      cleared : 0,
-      bumpiness : 0
-    }
 
     //score used to make a decision on the best move the make.
     this.score = 0;
@@ -226,7 +220,6 @@ calcFeatures(board) {
     }
   }
   this.features.height = height;
-  this.actual.height = height;
 
  //the sum of the absolute differeces between the heights of adjacent columns.
  let colHeights = [0,0,0,0,0,0,0,0,0,0];
@@ -243,7 +236,6 @@ calcFeatures(board) {
     bumpiness += Math.abs(colHeights[j] - colHeights[j+1]);
   }
   this.features.bumpiness = bumpiness;
-  this.actual.bumpiness= bumpiness;
 
   //the number of empty sqaures with a filled sqaure above it.
   let holes = 0;
@@ -255,7 +247,6 @@ calcFeatures(board) {
     })
   }
   this.features.holes = holes * 5;
-  this.actual.holes = holes;
 
   //Number of lines cleared
   let linesCleared = 0;
@@ -271,7 +262,6 @@ calcFeatures(board) {
       }
     }
   this.features.cleared = linesCleared;
-  this.actual.cleared = linesCleared;
 }
   //linear combination of the features and their weights.
   evaluation_function(features) {
