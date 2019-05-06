@@ -3,37 +3,24 @@ let maxFitness = 0;
 let num_of_games = 1;
 let mutation_rate = 0.1;
 let best_weights = {
-  a : -0.612107043230623,
-  b : -0.8379243317418958,
-  c : 0.323387373920562,
-  d : -0.3229463534592629
-
+   a:-0.014256034486687462,
+b: -0.21329081648452253,
+c: 0.39685599040127945,
+d: -0.1241000033786885
 }
-
-// //Max Fit 317
-// a : -0.48949459378873994,
-//   b : -0.8745234125736482,
-//   c : 0.3223501755056043,
-//   d : -0.29128689535437063
-
-// //Max Fit 328
-// Height:-0.612107043230623
-// Holes: -0.8379243317418958
-// Cleared: 0.323387373920562
-// Bumpiness: -0.3229463534592629
-
-
-
-
-
+//generation 29
+//  a:-0.014256034486687462,
+// b: -0.21329081648452253,
+// c: 0.39685599040127945,
+// d: -0.1241000033786885
 let weights = {
-  a : 0,
-  b : 0,
-  c : 0,
-  d : 0
+  a:0,
+b: 0,
+c: 0,
+d: 0
 }
 
-const MAX_GENERATION = 5;
+const MAX_GENERATION = Infinity;
 const POPSIZE = 50;
 
 function setup() {
@@ -45,7 +32,7 @@ function setup() {
 function genetic_algorithm() {
    population.games[num_of_games-1].update();
 
-   if (population.games[num_of_games-1].endGame == true) {
+   if (gameOver == true) {
     moves = 0;
     num_of_games ++;
     population.games[num_of_games-1].startGame();
@@ -67,23 +54,16 @@ function genetic_algorithm() {
 function Population() {
   this.games = [];
 
-
   for (var i = 0; i < POPSIZE; i++) {
     this.games[i] = new Game();
   }
 
   this.evaluate = function() {
-    var maxfit = 0;
+    this.games.sort(function (a,b) {return b.fitness - a.fitness});
 
-    for (var i = 0; i < POPSIZE; i++) {
-      this.games[i].calcFitness();
 
-      if (this.games[i].fitness > maxfit) {
-        maxfit = this.games[i].fitness;
-        best_weights = Object.assign({}, this.games[i].dna.genes);
-      }
-    }
-    maxFitness = maxfit;
+    maxFitness = this.games[0].fitness;
+    best_weights = Object.assign({}, this.games[0].dna.genes);
 
     let sum_of_scores = 0;
     for (var i = 0; i < POPSIZE; i++) {
@@ -111,18 +91,20 @@ function Population() {
   // Selects appropriate genes for child
   this.selection = function() {
     var newGames = [];
-    for (var i = 0; i < this.games.length; i++) {
+    for (var i = 0; i < (this.games.length/2); i++) {
       // Picks random dna
-      var parentA = this.pickOne(this.games).dna;
-      var parentB = this.pickOne(this.games).dna;
+      var parentA = this.pickOne(this.games);
+      var parentB = this.pickOne(this.games);
       // Creates child by using crossover function
-      var child = parentA.crossover(parentB);
+      var child = parentA.dna.crossover(parentB.dna, parentA, parentB);
       child.mutation();
       // Creates new rocket with child dna
       newGames[i] = new Game(child);
     }
     // This instance of rockets are the new rockets
-    this.games = newGames
+    this.games.splice(this.games.length/2);
+    this.games = this.games.concat(newGames);
+
   }
 }
 
@@ -135,36 +117,44 @@ function DNA(genes) {
   // If no genes just create random dna
   else {
     this.genes = {
-      a : - Math.random(),
-      b : - Math.random(),
-      c : Math.random(),
-      d : -Math.random()
+      a : Math.random() - 0.5,
+      b : Math.random() -0.5,
+      c : Math.random() - 0.5,
+      d : Math.random() -0.5
     }
   }
 
-  this.crossover = function(partner) {
-    var newgenes = {
-      a: (partner.genes.a + this.genes.a)/2,
-      b: (partner.genes.b + this.genes.b)/2,
-      c: (partner.genes.c + this.genes.c)/2,
-      d: (partner.genes.d + this.genes.d)/2
+  this.crossover = function(partner, pA, pB) {
+    //which ever has a bigger fitness
+    //if A has a larger fitness it's genes will be close to A.
+    let alpha = this.genes;
+    let beta = partner.genes;
+    if ( pA.fitness < pB.fitness) {
+      alpha = partner.genes;
+      beta = this.genes;
     }
+     var newgenes = {
+     a: (alpha.a * .9 + beta.a * .1),
+     b: (alpha.b * .9 + beta.b * .1),
+     c: (alpha.c * .9 + beta.c * .1),
+     d: (alpha.d * .9 + beta.d * .1)
+   }
 
     return new DNA(newgenes);
   }
   // Adds random mutation to the genes to add variance.
   this.mutation = function() {
     if (Math.random() < mutation_rate) {
-      this.genes.a = this.genes.a + Math.random() - 0.5;
+      this.genes.a = this.genes.a + Math.random() * 0.4 ;
      }
     if (Math.random() < mutation_rate) {
-      this.genes.b = this.genes.b + Math.random() - 0.5;
+      this.genes.b = this.genes.b + Math.random() * 0.4;
      }
     if (Math.random() < mutation_rate) {
-      this.genes.c = this.genes.c + Math.random() - 0.5;
+      this.genes.c = this.genes.c + Math.random() * 0.4 ;
      }
     if (Math.random() < mutation_rate) {
-      this.genes.d = this.genes.d + Math.random() - 0.5;
+      this.genes.d = this.genes.d + Math.random() * 0.4 ;
      }
    }
  }
@@ -180,19 +170,12 @@ function Game(dna) {
     this.fitness = 0;
     this.prob = 0;
     this.lines = 0;
-    this.game_score = 0;
-    this.endGame = false;
 
     this.update = function() {
         if (moves == 500 || gameOver == true){
             this.lines = lines;
-            this.game_score = game_score;
-            this.endGame = true;
+            this.fitness = game_score;
         }
-    }
-
-    this.calcFitness = function() {
-        this.fitness = this.game_score;
     }
 
     this.startGame = function(gene) {
