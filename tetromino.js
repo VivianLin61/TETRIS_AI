@@ -242,7 +242,7 @@ calcFeatures(board) {
   for (let j = 0; j < colHeights.length - 1; j++) {
     bumpiness += Math.abs(colHeights[j] - colHeights[j+1]);
   }
-  this.features.bumpiness = bumpiness * 5;
+  this.features.bumpiness = bumpiness;
   this.actual.bumpiness= bumpiness;
 
   //the number of empty sqaures with a filled sqaure above it.
@@ -270,7 +270,7 @@ calcFeatures(board) {
         linesCleared ++;
       }
     }
-  this.features.cleared = linesCleared * 5;
+  this.features.cleared = linesCleared;
   this.actual.cleared = linesCleared;
 }
   //linear combination of the features and their weights.

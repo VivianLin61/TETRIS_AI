@@ -7,7 +7,7 @@ const holdCvs = document.getElementById("hold");
 const holdCtx = holdCvs.getContext("2d");
 const nextCvs = document.getElementById("next");
 const nextCtx = nextCvs.getContext("2d");
-const ROW = 20;
+const ROW = 17 ;
 const COL = COLUMN = 10;
 const WIDTH = 200;
 const SIZE = WIDTH/COL;
@@ -183,7 +183,8 @@ function getPiece() {
 //Tetris bag random generator
 function randomPiece() {
     if (bag.length === 0) {
-        bag = [0, 1, 2, 3, 4, 5, 6];
+        //to make the ai train faster i increased the probability of pieces "z and s" because these are the hardest pieces to place. This decreases each game length and learning time.
+        bag = [ 0, 0, 1, 1, 2, 3, 4, 5, 6];
         bag = shuffle(bag);
     }
     let r = bag.pop();
@@ -302,4 +303,4 @@ function shuffle(a) {
         [a[i], a[j]] = [a[j], a[i]];
     }
     return a;
-zZXCV  }
+ }

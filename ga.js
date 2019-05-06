@@ -3,17 +3,21 @@ let maxFitness = 0;
 let num_of_games = 1;
 let mutation_rate = 0.1;
 let best_weights = {
-  a : 0,
-  b : 0,
-  c : 0,
-  d : 0
+   a:-0.014256034486687462,
+b: -0.21329081648452253,
+c: 0.39685599040127945,
+d: -0.1241000033786885
 }
-
+//generation 29
+//  a:-0.014256034486687462,
+// b: -0.21329081648452253,
+// c: 0.39685599040127945,
+// d: -0.1241000033786885
 let weights = {
-  a : 0,
-  b : 0,
-  c : 0,
-  d : 0
+  a:0,
+b: 0,
+c: 0,
+d: 0
 }
 
 const MAX_GENERATION = Infinity;
@@ -28,7 +32,7 @@ function setup() {
 function genetic_algorithm() {
    population.games[num_of_games-1].update();
 
-   if (population.games[num_of_games-1].endGame == true) {
+   if (gameOver == true) {
     moves = 0;
     num_of_games ++;
     population.games[num_of_games-1].startGame();
@@ -50,23 +54,16 @@ function genetic_algorithm() {
 function Population() {
   this.games = [];
 
-
   for (var i = 0; i < POPSIZE; i++) {
     this.games[i] = new Game();
   }
 
   this.evaluate = function() {
-    var maxfit = 0;
+    this.games.sort(function (a,b) {return b.fitness - a.fitness});
 
-    for (var i = 0; i < POPSIZE; i++) {
-      this.games[i].calcFitness();
 
-      if (this.games[i].fitness > maxfit) {
-        maxfit = this.games[i].fitness;
-        best_weights = Object.assign({}, this.games[i].dna.genes);
-      }
-    }
-    maxFitness = maxfit;
+    maxFitness = this.games[0].fitness;
+    best_weights = Object.assign({}, this.games[0].dna.genes);
 
     let sum_of_scores = 0;
     for (var i = 0; i < POPSIZE; i++) {
@@ -94,7 +91,7 @@ function Population() {
   // Selects appropriate genes for child
   this.selection = function() {
     var newGames = [];
-    for (var i = 0; i < this.games.length; i++) {
+    for (var i = 0; i < (this.games.length/2); i++) {
       // Picks random dna
       var parentA = this.pickOne(this.games);
       var parentB = this.pickOne(this.games);
@@ -105,7 +102,9 @@ function Population() {
       newGames[i] = new Game(child);
     }
     // This instance of rockets are the new rockets
-    this.games = newGames
+    this.games.splice(this.games.length/2);
+    this.games = this.games.concat(newGames);
+
   }
 }
 
@@ -171,19 +170,12 @@ function Game(dna) {
     this.fitness = 0;
     this.prob = 0;
     this.lines = 0;
-    this.game_score = 0;
-    this.endGame = false;
 
     this.update = function() {
         if (moves == 500 || gameOver == true){
             this.lines = lines;
-            this.game_score = game_score;
-            this.endGame = true;
+            this.fitness = game_score;
         }
-    }
-
-    this.calcFitness = function() {
-        this.fitness = this.game_score;
     }
 
     this.startGame = function(gene) {
