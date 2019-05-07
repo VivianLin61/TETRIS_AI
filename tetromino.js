@@ -261,6 +261,20 @@ calcFeatures(board) {
         linesCleared ++;
       }
     }
+     switch(linesCleared) {
+  case 1:
+    linesCleared = 1;
+    break;
+  case 2:
+    linesCleared = 3;
+     break;
+  case 3:
+    linesCleared = 6
+     break;
+  case 4:
+    linesCleared = 12;
+     break;
+ }
   this.features.cleared = linesCleared;
 }
   //linear combination of the features and their weights.
