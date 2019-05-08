@@ -64,11 +64,12 @@ function run() {
 
     if (ai == false) {
         speed = 200;
-         weights = weights = Object.assign({}, best_weights);
+
         draw();
 
     } else {
         speed = 0.1;
+         weights = weights = Object.assign({}, best_weights);
         decision_function();
     }
     if (gameplay) {
@@ -282,10 +283,14 @@ function displayInfo() {
     document.getElementById("holes").innerHTML = best_weights.b;
     document.getElementById("cleared").innerHTML = best_weights.c;
     document.getElementById("bumpiness").innerHTML = best_weights.d;
+        document.getElementById("vacant").innerHTML = best_weights.e;
+
      document.getElementById("c.height").innerHTML =  weights.a;
     document.getElementById("c.holes").innerHTML = weights.b;
     document.getElementById("c.cleared").innerHTML = weights.c;
     document.getElementById("c.bumpiness").innerHTML = weights.d;
+    document.getElementById("c.vacant").innerHTML = weights.e;
+
 }
 
 //HELPER Functions

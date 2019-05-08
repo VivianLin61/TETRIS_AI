@@ -7,7 +7,8 @@ class Tetromino {
       height : 0, //minimize
       holes : 0, //minimize
       cleared : 0, //maximize
-      bumpiness : 0 //minimize
+      bumpiness : 0, //minimize
+      vacant : 0
     }
 
     //score used to make a decision on the best move the make.
@@ -199,6 +200,8 @@ lock(board, clone) {
       }
     }
   }
+  this.calcFeatures(board);
+  console.log(this.features);
   if (clone) {
     this.calcFeatures(board);
     this.evaluation_function(this.features);
@@ -261,11 +264,48 @@ calcFeatures(board) {
         linesCleared ++;
       }
     }
+     switch(linesCleared) {
+  case 1:
+    linesCleared = 1;
+    break;
+  case 2:
+    linesCleared = 3;
+     break;
+  case 3:
+    linesCleared = 6
+     break;
+  case 4:
+    linesCleared = 12;
+     break;
+ }
   this.features.cleared = linesCleared;
+
+  //ccalculate number of holes below floved place.
+  var columns = [];
+  var rows = [];
+  this.currTetromino.forEach((row,i) => row.forEach((col, j) => {
+      if (col) {
+        if (columns.indexOf(j + this.x) == -1) {
+          columns.push(j + this.x);
+        rows.push(i + this.y);
+        }
+      }
+    }))
+let vacant = 0;
+    for (var j = 0; j < columns.length; j++) {
+      let c = columns[j];
+      for (var r = rows[j]; r < ROW; r++) {
+        if (board[r][c] == "WHITE") {
+          vacant ++;
+        }
+      }
+    }
+
+  this.features.vacant = vacant;
 }
   //linear combination of the features and their weights.
   evaluation_function(features) {
-    this.score = features.height*weights.a + features.holes*weights.b + features.cleared*weights.c + features.bumpiness*weights.d;
+    this.score = features.height*weights.a + features.holes*weights.b + features.cleared*weights.c + features.bumpiness*weights.d + features.vacant*weights.e;
   }
 }
 

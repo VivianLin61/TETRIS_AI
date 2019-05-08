@@ -3,17 +3,30 @@ let maxFitness = 0;
 let num_of_games = 1;
 let mutation_rate = 0.1;
 let best_weights = {
-   a:-0.014256034486687462,
-b: -0.21329081648452253,
-c: 0.39685599040127945,
-d: -0.1241000033786885
+  a:0.012986105043601821,
+b: -0.33099889329580323,
+c: 0.5446471620000896,
+d: -0.25120763453283845,
+e: -0.13253702980064244,
+
+
 }
+
+
+//  a:-0.014256034486687462,
+// b: -0.21329081648452253,
+// c: 0.39685599040127945,
+// d: -0.1241000033786885,
+// e: 0
+
+
 
 let weights = {
   a:0,
 b: 0,
 c: 0,
-d: 0
+d: 0,
+e: 0,
 }
 
 const MAX_GENERATION = Infinity;
@@ -116,7 +129,8 @@ function DNA(genes) {
       a : Math.random() - 0.5,
       b : Math.random() -0.5,
       c : Math.random() - 0.5,
-      d : Math.random() -0.5
+      d : Math.random() -0.5,
+      e : Math.random() - 0.5
     }
   }
 
@@ -133,7 +147,8 @@ function DNA(genes) {
      a: (alpha.a * .9 + beta.a * .1),
      b: (alpha.b * .9 + beta.b * .1),
      c: (alpha.c * .9 + beta.c * .1),
-     d: (alpha.d * .9 + beta.d * .1)
+     d: (alpha.d * .9 + beta.d * .1),
+      e: (alpha.e * .9 + beta.e * .1)
    }
 
     return new DNA(newgenes);
@@ -151,6 +166,9 @@ function DNA(genes) {
      }
     if (Math.random() < mutation_rate) {
       this.genes.d = this.genes.d + Math.random() * 0.4 ;
+     }
+        if (Math.random() < mutation_rate) {
+      this.genes.e = this.genes.e + Math.random() * 0.4 ;
      }
    }
  }
