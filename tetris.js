@@ -23,18 +23,20 @@ const TETROMINOES = [
 ];
 
 //AI Variables
-let ai = false;
+let ai = true;
 let ga = geneticAlgorithm = false;
 let speed;
 let gameplay;
-let gameOver = false;
+let gameOver;
 
 function load() {
     if (ga == true){
         ai = true;
         setup();
-    } else {
-         initialize();
+    } else if (ai == true){
+        initialize();
+        gameOver = false;
+        run();
     }
 }
 
@@ -64,12 +66,11 @@ function run() {
 
     if (ai == false) {
         speed = 200;
-
         draw();
 
     } else {
         speed = 0.1;
-         weights = weights = Object.assign({}, best_weights);
+        weights = weights = Object.assign({}, best_weights);
         decision_function();
     }
     if (gameplay) {
@@ -108,6 +109,7 @@ function decision_function() {
     if (illegalMoves == 40) {
         endGame();
     }
+    //check if score of current piece less than score of next piece
     makeMove(move);
 }
 
@@ -233,12 +235,6 @@ function keyPressed() {
     if (event.keyCode == 65) {
         toggleAI();
     }
-    //S Pressed Start Game
-    if (event.keyCode == 83) {
-        initialize();
-        gameOver = false
-        run();
-    }
     if (ai == false && !gameOver) {
         if (event.keyCode === 37) {
             piece.moveLeft();
@@ -283,9 +279,8 @@ function displayInfo() {
     document.getElementById("holes").innerHTML = best_weights.b;
     document.getElementById("cleared").innerHTML = best_weights.c;
     document.getElementById("bumpiness").innerHTML = best_weights.d;
-        document.getElementById("vacant").innerHTML = best_weights.e;
-
-     document.getElementById("c.height").innerHTML =  weights.a;
+    document.getElementById("vacant").innerHTML = best_weights.e;
+    document.getElementById("c.height").innerHTML =  weights.a;
     document.getElementById("c.holes").innerHTML = weights.b;
     document.getElementById("c.cleared").innerHTML = weights.c;
     document.getElementById("c.bumpiness").innerHTML = weights.d;

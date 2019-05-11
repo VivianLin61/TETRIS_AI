@@ -200,8 +200,7 @@ lock(board, clone) {
       }
     }
   }
-  this.calcFeatures(board);
-  console.log(this.features);
+
   if (clone) {
     this.calcFeatures(board);
     this.evaluation_function(this.features);

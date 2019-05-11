@@ -2,34 +2,23 @@ let generation = 1;
 let maxFitness = 0;
 let num_of_games = 1;
 let mutation_rate = 0.1;
+//Evolved
 let best_weights = {
   a:0.012986105043601821,
-b: -0.33099889329580323,
-c: 0.5446471620000896,
-d: -0.25120763453283845,
-e: -0.13253702980064244,
-
-
+  b:-0.33099889329580323,
+  c:0.5446471620000896,
+  d:-0.25120763453283845,
+  e:-0.13253702980064244,
 }
-
-
-//  a:-0.014256034486687462,
-// b: -0.21329081648452253,
-// c: 0.39685599040127945,
-// d: -0.1241000033786885,
-// e: 0
-
-
 
 let weights = {
   a:0,
-b: 0,
-c: 0,
-d: 0,
-e: 0,
+  b:0,
+  c:0,
+  d:0,
+  e:0,
 }
 
-const MAX_GENERATION = Infinity;
 const POPSIZE = 50;
 
 function setup() {
@@ -54,9 +43,7 @@ function genetic_algorithm() {
     population.games[num_of_games-1].startGame();
     generation ++;
   }
-
     requestAnimationFrame(genetic_algorithm);
-
 }
 
 //POPULATION OBJECT
@@ -97,7 +84,7 @@ function Population() {
     return list[index];
   }
 
-  // Selects appropriate genes for child
+
   this.selection = function() {
     var newGames = [];
     for (var i = 0; i < (this.games.length/2); i++) {
@@ -107,10 +94,10 @@ function Population() {
       // Creates child by using crossover function
       var child = parentA.dna.crossover(parentB.dna, parentA, parentB);
       child.mutation();
-      // Creates new rocket with child dna
+
       newGames[i] = new Game(child);
     }
-    // This instance of rockets are the new rockets
+
     this.games.splice(this.games.length/2);
     this.games = this.games.concat(newGames);
 
@@ -148,7 +135,7 @@ function DNA(genes) {
      b: (alpha.b * .9 + beta.b * .1),
      c: (alpha.c * .9 + beta.c * .1),
      d: (alpha.d * .9 + beta.d * .1),
-      e: (alpha.e * .9 + beta.e * .1)
+     e: (alpha.e * .9 + beta.e * .1)
    }
 
     return new DNA(newgenes);
@@ -167,7 +154,7 @@ function DNA(genes) {
     if (Math.random() < mutation_rate) {
       this.genes.d = this.genes.d + Math.random() * 0.4 ;
      }
-        if (Math.random() < mutation_rate) {
+    if (Math.random() < mutation_rate) {
       this.genes.e = this.genes.e + Math.random() * 0.4 ;
      }
    }
