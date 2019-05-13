@@ -3,11 +3,11 @@ let maxFitness = 0;
 let num_of_games = 1;
 let mutation_rate = 0.1;
 let best_weights = {
-   a:-0.014256034486687462,
-b: -0.21329081648452253,
-c: 0.39685599040127945,
-d: -0.1241000033786885,
-e: 0
+  a:-0.014256034486687462,
+  b:-0.21329081648452253,
+  c:0.39685599040127945,
+  d:-0.1241000033786885,
+  e:
 }
 
 let weights = {
@@ -18,7 +18,6 @@ d: 0,
 e: 0,
 }
 
-const MAX_GENERATION = Infinity;
 const POPSIZE = 50;
 
 function setup() {
