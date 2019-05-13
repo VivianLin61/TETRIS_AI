@@ -71,7 +71,7 @@ function run() {
     } else {
         speed = 0.1;
         weights = weights = Object.assign({}, best_weights);
-        decision_function();
+        decision_function(piece);
     }
     if (gameplay) {
         clearInterval(gameplay);
@@ -84,7 +84,8 @@ function run() {
 
 // AI Functions
 //chooses the piece with the best score.
-function decision_function() {
+
+function decision_function(p) {
     let illegalMoves = 0;
     let maxScore = Number.NEGATIVE_INFINITY;
     let move = {
@@ -94,7 +95,7 @@ function decision_function() {
 //tests all possible moves to find the best move.
     for (var translation = -1; translation < 9; translation ++) {
         for (var rotation = 0; rotation < 4; rotation ++) {
-            let score = action(rotation,translation);
+            let score = action(p, rotation,translation);
             if(score === Number.NEGATIVE_INFINITY) {
                 illegalMoves ++;
             }
@@ -119,8 +120,8 @@ function makeMove(move) {
     piece.x = move.translation;
 }
 
-function action(rotation, translation) {
-    var pieceClone = new Tetromino(piece.tetromino, piece.color);
+function action(p, rotation, translation) {
+    var pieceClone = new Tetromino(p.tetromino, p.color);
     if (pieceClone.color == YELLOW) {
         rotation = 0;
     }

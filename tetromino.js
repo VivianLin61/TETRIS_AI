@@ -63,7 +63,7 @@ class Tetromino {
         moves++;
         piece = getPiece();
         if (ai == true )
-          decision_function();
+          decision_function(piece);
       }
     }
   }
