@@ -16,24 +16,30 @@
             left: 50%;
             margin-left: -100px;
         }
-        #hold {
+        #hold, #hold_txt{
             position: absolute;
             left: 50%;
             margin-left: -200px;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 20px;
         }
 
-        #next {
+        #next, #next_txt{
+            font-size: 20px;
             position: absolute;
             left:50%;
-            margin-left: 120px
+            margin-left: 120px;
+            font-weight: bold;
+            font-family: monospace;
         }
 
         button {
             display: block;
         }
-        #container {
+        #right-container {
             position: absolute;
-            top:160px;
+            top:180px;
             height: 300px;
             left:50%;
             margin-left: 120px;
@@ -41,46 +47,90 @@
             display: block;
         }
 
-        .genes {
+        #left_container {
+            position: absolute;
+            top:160px;
+            height: 300px;
+            left:50%;
+            margin-left: -400px;
+            width: 290px;
+            display: block;
+        }
+        #text{
+            border: 1px solid black;
+            height: 200px;
+        }
+
+        .weights {
             text-indent: 20px;
 
         }
+        canvas {
+            position: absolute;
+            top: 90px;
+        }
+  
     </style>
 </head>
 <body onload = "load();">
-   <div class="title">TETRIS</div>
-   <div class="title">Press A To Toggle AI </div>
+   <div class="title">TETRIS AI - Genetic Algorithm</div>
+     <div id="commands" class="title"> 
+           <span>[P] Play Tetris</span>
+   <span  id="eKeyMsg">[E] Evolved AI</span>
+
+
+    </div>
+   <div><div id="hold_txt">Hold </div><span id="next_txt"> Next</span></div>
 
     <canvas id="tetris" width="200" height="400"></canvas>
-    <canvas id="hold" width="100" height="100"></canvas>
+    <canvas id="hold" width="100" height="100"></canvas> 
     <canvas id="next" width="100" height="100"></canvas>
+
 
     <script src="tetrominoes.js"></script>
     <script src="tetromino.js"></script>
     <script src="tetris.js"></script>
     <script src="ga.js"></script>
 
-    <div id="container">
+    <div id="right-container">
         <div>Lines Cleared: <span id="lines">0</span></div>
         <div>Score: <span id="game_score">0</span></div>
+        <div id="genetic_algorithm">
         <div>Generation: <span id="generation">0</span></div>
-        <div>MaxFit: <span id="max_fit">0</span></div>
+        <div>Max Fitness: <span id="max_fit">0</span></div>
+        <div>Max Lines: <span id="max_lines">0</span></div>
         <div>Game Number: <span id="game_number">0</span>/<span id="max_games"></span></div>
         <div>Moves: <span id="moves">0</span></div>
-        <div>Best Genes: {
-            <div class="genes" >Height:<span id="height"></span> </div>
-            <div class="genes" >Holes: <span id="holes"> </span></div>
-            <div class="genes" >Cleared: <span id="cleared"> </span></div>
-            <div class="genes" >Bumpiness: <span id="bumpiness"> </span></div>
-             <div class="genes" >Vacant: <span id="vacant"> </span></div>
+        <div>Best Weights: {
+            <div class="weights" >Height:<span id="height"></span> </div>
+            <div class="weights" >Holes: <span id="holes"> </span></div>
+            <div class="weights" >Cleared: <span id="cleared"> </span></div>
+            <div class="weights" >Bumpiness: <span id="bumpiness"> </span></div>
+             <div class="weights" >Vacant: <span id="vacant"> </span></div>
         } </div>
-        <div>Current Genes: {
-            <div class="genes" >Height:<span id="c.height"></span> </div>
-            <div class="genes" >Holes: <span id="c.holes"> </span></div>
-            <div class="genes" >Cleared: <span id="c.cleared"> </span></div>
-            <div class="genes" >Bumpiness: <span id="c.bumpiness"> </span></div>
-            <div class="genes" >Vacant: <span id="c.vacant"> </span></div>
+        <div>Current Weights: {
+            <div class="weights" >Height:<span id="c.height"></span> </div>
+            <div class="weights" >Holes: <span id="c.holes"> </span></div>
+            <div class="weights" >Cleared: <span id="c.cleared"> </span></div>
+            <div class="weights" >Bumpiness: <span id="c.bumpiness"> </span></div>
+            <div class="weights" >Vacant: <span id="c.vacant"> </span></div>
         } </div>
+         </div>
+    </div>
+
+
+    <div id="left_container">
+
+    <div id="play">
+        <h1 class="title"> How To Play</h1>
+        <ul>
+            <li class="play">Move the tetrominoes left and right with the LEFT and RIGHT arrow keys</li>
+            <li class="play">Rotate the terominoes with the UP key.</li>
+            <li class="play">Press the DOWN Arrow key to perform a soft drop. (The tetromino will fall faster than normal)</li>
+            <li class="play">Press the SPACE bar to perform a hard drop. (The tetromino will fall straight down)</li>
+            <li class="play">Press the C key to activate the hold queue. </li>
+        </ul>
+    </div>
     </div>
 
 </body>

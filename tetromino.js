@@ -168,16 +168,16 @@ checkLines() {
 //updates the game_score
  switch(linesCleared) {
   case 1:
-    game_score += 1;
+    game_score += 40;
     break;
   case 2:
-    game_score += 3;
+    game_score += 100;
      break;
   case 3:
-    game_score += 6;
+    game_score += 300;
      break;
   case 4:
-    game_score += 12;
+    game_score += 1200;
      break;
  }
 
@@ -265,16 +265,16 @@ calcFeatures(board) {
     }
      switch(linesCleared) {
   case 1:
-    linesCleared = 1;
+    linesCleared = 40;
     break;
   case 2:
-    linesCleared = 3;
+    linesCleared = 100;
      break;
   case 3:
-    linesCleared = 6
+    linesCleared = 300;
      break;
   case 4:
-    linesCleared = 12;
+    linesCleared = 1200;
      break;
  }
   this.features.cleared = linesCleared;

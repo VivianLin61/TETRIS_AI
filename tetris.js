@@ -23,9 +23,8 @@ const TETROMINOES = [
 ];
 
 //AI Variables
-let ai = true;
-let ga = geneticAlgorithm = false;
-let speed;
+let ai = false;
+let ga = geneticAlgorithm = true;
 let gameplay;
 let gameOver;
 
@@ -33,7 +32,7 @@ function load() {
     if (ga == true){
         ai = true;
         setup();
-    } else if (ai == true){
+    } else{
         initialize();
         gameOver = false;
         run();
@@ -51,6 +50,7 @@ function initialize() {
     bag = [];
     lines = 0;
     moves = 0;
+
     //score used to calculate the fitness of each game.
     game_score = 0;
 
@@ -68,9 +68,18 @@ function run() {
         speed = 200;
         draw();
 
-    } else {
+    } else{
+        //if it not learning use fully evolved weights.
+        if (ga == false) {
+            weights = {
+              a:0.012986105043601821,
+              b:-0.33099889329580323,
+              c:0.5446471620000896,
+              d:-0.25120763453283845,
+              e:-0.13253702980064244,
+            }
+        }
         speed = 0.1;
-        weights = weights = Object.assign({}, best_weights);
         decision_function(piece);
     }
     if (gameplay) {
@@ -78,13 +87,12 @@ function run() {
     }
     gameplay = setInterval(()=> {
         displayInfo();
-        piece.moveDown()
+        piece.moveDown();
     }, speed);
 }
 
 // AI Functions
 //chooses the piece with the best score.
-
 function decision_function(p) {
     let illegalMoves = 0;
     let maxScore = Number.NEGATIVE_INFINITY;
@@ -187,8 +195,13 @@ function getPiece() {
 //Tetris bag random generator
 function randomPiece() {
     if (bag.length === 0) {
-        //to make the ai train faster i increased the probability of pieces "z and s" because these are the hardest pieces to place. This decreases each game length and learning time.
-        bag = [0, 1, 2, 3, 4, 5, 6];
+        if (ga == true) {
+            //when training incrase the likelihood of 'S' and 'Z' pieces. This decreases training time. 
+            bag = [0, 0, 1, 1, 2, 3, 4, 5, 6];
+
+        } else {
+            bag = [0, 1, 2, 3, 4, 5, 6];
+        }
         bag = shuffle(bag);
     }
     let r = bag.pop();
@@ -217,24 +230,45 @@ function hold() {
 function endGame() {
     clearInterval(gameplay);
     gameOver = true;
-    //console.log(lines);
 }
 
 document.addEventListener("keydown", keyPressed);
 document.addEventListener("keyup", keyReleased);
 
 let spacePressed = false;
+let pPressed = false;
+let ePressed = false;
 
 function keyReleased() {
     if (event.keyCode === 32) {
         spacePressed = false;
+    } 
+    if (event.keyCode === 80) {
+        oPressed = false;
     }
+    if (event.keyCode === 69) {
+        ePressed = false;
+    } 
 }
-
 function keyPressed() {
-    //A Pressed
-    if (event.keyCode == 65) {
-        toggleAI();
+    //P Pressed
+    //Turn Off AI
+    if (event.keyCode ==80) {
+        if(pPressed == false) {
+            pPressed = true;
+            ga = false;
+            ai = false;
+            document.getElementById("genetic_algorithm").style.display = 'none';
+            document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
+            load();
+        }
+    }
+    //Toggle Between Evolved and Training AI.
+    if (event.keyCode === 69) {
+        if (ePressed == false) {
+            ePressed = true;
+            toggleGA();
+        }
     }
     if (ai == false && !gameOver) {
         if (event.keyCode === 37) {
@@ -268,11 +302,27 @@ function toggleAI() {
     run();
 }
 
+function toggleGA() {
+    if (ga == true) {
+        ga = false;
+        document.getElementById("genetic_algorithm").style.display = 'none';
+        document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
+        load();
+    } else {
+        document.getElementById("genetic_algorithm").style.display = 'block';
+        document.getElementById("eKeyMsg").innerHTML = "[E] Evolved AI";
+        ga = true;
+        initialize();
+        load();
+    }
+}
+
 function displayInfo() {
     document.getElementById("lines").innerHTML = lines;
     document.getElementById("game_score").innerHTML = game_score;
     document.getElementById("generation").innerHTML = generation;
-    document.getElementById("max_fit").innerHTML = maxFitness
+    document.getElementById("max_fit").innerHTML = maxFitness;
+    document.getElementById("max_lines").innerHTML = maxLines;
     document.getElementById("game_number").innerHTML = num_of_games;
     document.getElementById("moves").innerHTML = moves;
     document.getElementById("max_games").innerHTML = POPSIZE;
@@ -286,7 +336,6 @@ function displayInfo() {
     document.getElementById("c.cleared").innerHTML = weights.c;
     document.getElementById("c.bumpiness").innerHTML = weights.d;
     document.getElementById("c.vacant").innerHTML = weights.e;
-
 }
 
 //HELPER Functions
