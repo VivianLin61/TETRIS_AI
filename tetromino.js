@@ -8,16 +8,17 @@ class Tetromino {
       holes : 0, //minimize
       cleared : 0, //maximize
       bumpiness : 0, //minimize
-      vacant : 0
+      vacant : 0 //minimize
     }
 
-    //score used to make a decision on the best move the make.
+    //score used to calculte the best move the make.
     this.score = 0;
 
     this.tetrominoIdx = 0;
     this.currTetromino = this.tetromino[this.tetrominoIdx];
     this.x = 3;
     this.y = -1;
+    //position of ghost piece.
     this.gY;
   }
 
@@ -88,20 +89,23 @@ class Tetromino {
   let nextTetromino = this.tetromino[nxtIdx];
   let kick = 0;
 
+  //Apply kick
   if (this.collision(0,0,nextTetromino)) {
     if (this.x > COL/2) {
+      //rotate the I piece.
       if (this.color == CYAN && nxtIdx == 0) {
         kick -= 1;
       }
       kick -= 1;
     } else {
+      //rotate the I piece.
       if (this.color == CYAN && nxtIdx == 0) {
         kick += 1 ;
       }
       kick += 1;
     }
   }
-
+  //rotate piece
   if(!this.collision(kick,0,nextTetromino)) {
    this.hide();
    this.x += kick;
@@ -168,16 +172,16 @@ checkLines() {
 //updates the game_score
  switch(linesCleared) {
   case 1:
-    game_score += 40;
+    game_score += 4;
     break;
   case 2:
-    game_score += 100;
+    game_score += 10;
      break;
   case 3:
-    game_score += 300;
+    game_score += 30;
      break;
   case 4:
-    game_score += 1200;
+    game_score += 120;
      break;
  }
 
@@ -189,7 +193,7 @@ lock(board, clone) {
     for (let c = 0; c < this.currTetromino.length; c++) {
       if (this.currTetromino[r][c]) {
         if (this.y + r < 0) {
-          if (clone == true) {
+          if (clone) {
             this.score = Number.NEGATIVE_INFINITY;
           } else {
             endGame();
@@ -265,21 +269,21 @@ calcFeatures(board) {
     }
      switch(linesCleared) {
   case 1:
-    linesCleared = 40;
+    linesCleared = 4; //1
     break;
   case 2:
-    linesCleared = 100;
+    linesCleared = 10; //3
      break;
   case 3:
-    linesCleared = 300;
+    linesCleared = 30; //6
      break;
   case 4:
-    linesCleared = 1200;
+    linesCleared = 120; //12
      break;
  }
   this.features.cleared = linesCleared;
 
-  //ccalculate number of holes below floved place.
+  //calculate number of holes below placed piece.
   var columns = [];
   var rows = [];
   this.currTetromino.forEach((row,i) => row.forEach((col, j) => {

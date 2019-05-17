@@ -8,7 +8,7 @@ function initialize_training_varaibles() {
   num_of_games = 1;
   mutation_rate = 0.05;
   //How much the mutation affects the child
-    //fitness_limit = ;
+  //fitness_limit = ;
   move_limit = 500;
   mutation_multiplier = 0.2;
   alpha_multiplier = 0.8;
@@ -82,7 +82,6 @@ function Population() {
     }
   }
 
-
   this.pickOne = function(list) {
     var index = 0;
     var r = Math.random();
@@ -94,7 +93,6 @@ function Population() {
     index --;
     return list[index];
   }
-
 
   this.selection = function() {
     var newGames = [];

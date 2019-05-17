@@ -10,7 +10,6 @@
             font-family: monospace;
             text-align: center;
         }
-
         #tetris{
             position: absolute;
             left: 50%;
@@ -24,7 +23,6 @@
             font-family: monospace;
             font-size: 20px;
         }
-
         #next, #next_txt{
             font-size: 20px;
             position: absolute;
@@ -33,7 +31,6 @@
             font-weight: bold;
             font-family: monospace;
         }
-
         button {
             display: block;
         }
@@ -46,7 +43,6 @@
             width: 400px;
             display: block;
         }
-
         #left_container {
             position: absolute;
             top:20px;
@@ -60,21 +56,18 @@
             border: 1px solid black;
             height: 200px;
         }
-
         .weights {
             text-indent: 20px;
-
         }
         canvas {
             position: absolute;
             top: 90px;
         }
-
-        #how_to_play {
-            display: none;
-        }
         #the_genetic_algorithm {
             display: block;
+        }
+        #how_to_play {
+            display: none;
         }
         #decision_function {
             display: none;
@@ -82,7 +75,9 @@
         #evolved_weights {
             display: none;
         }
-  
+        #level_div{
+            display: none;
+        }
     </style>
 </head>
 <body onload = "load();">
@@ -102,8 +97,8 @@
     <script src="tetris.js"></script>
     <script src="ga.js"></script>
 
-
     <div id="right-container">
+        <div id="level_div">Level: <span id="level">1</span></div>
         <div>Lines Cleared: <span id="lines">0</span></div>
         <div>Score: <span id="game_score">0</span></div>
         <div id="evolved_weights"> 
@@ -122,24 +117,23 @@
         <div>Game Number: <span id="game_number">0</span>/<span id="max_games"></span></div>
         <div>Moves: <span id="moves">0</span></div>
         <div>Best Weights: {
-            <div class="weights" >Height:<span id="height"></span> </div>
-            <div class="weights" >Holes: <span id="holes"> </span></div>
-            <div class="weights" >Cleared: <span id="cleared"> </span></div>
+            <div class="weights" >Height:<span id="height"></span></div>
+            <div class="weights" >Holes: <span id="holes"></span></div>
+            <div class="weights" >Cleared: <span id="cleared"></span></div>
             <div class="weights" >Bumpiness: <span id="bumpiness"> </span></div>
-             <div class="weights" >Vacant: <span id="vacant"> </span></div>
+            <div class="weights" >Vacant: <span id="vacant"></span></div>
         } </div>
         <div>Current Weights: {
-            <div class="weights" >Height:<span id="c.height"></span> </div>
-            <div class="weights" >Holes: <span id="c.holes"> </span></div>
-            <div class="weights" >Cleared: <span id="c.cleared"> </span></div>
-            <div class="weights" >Bumpiness: <span id="c.bumpiness"> </span></div>
-            <div class="weights" >Vacant: <span id="c.vacant"> </span></div>
+            <div class="weights" >Height:<span id="c.height"></span></div>
+            <div class="weights" >Holes: <span id="c.holes"></span></div>
+            <div class="weights" >Cleared: <span id="c.cleared"></span></div>
+            <div class="weights" >Bumpiness: <span id="c.bumpiness"></span></div>
+            <div class="weights" >Vacant: <span id="c.vacant"></span></div>
         } </div>
          </div>
     </div>
 
     <div id="left_container">
-
         <div id="decision_function"> 
             <h1 class="title">Decision Function</h1>
             <ol>
@@ -178,8 +172,6 @@
                 <li class="play">Press the C key to activate the hold queue. </li>
             </ul>
         </div>
-
     </div>
-
 </body>
 </html>

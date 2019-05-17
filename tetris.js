@@ -41,6 +41,7 @@ function load() {
 
 function initialize() {
     gameOver = true;
+    level = 1;
     canHold = true;
     gameBoard = Array.from(new Array(ROW),(r,i) => Array.from(new Array(COL), (c,j) => c = "WHITE"));
     holdMatrix = Array.from(new Array(4), (r, i) => Array.from(new Array(4), (c,j) => c = "WHITE"));
@@ -65,7 +66,7 @@ function run() {
     piece = getPiece();
 
     if (ai == false) {
-        speed = 200;
+        speed = 1000;
         draw();
 
     } else{
@@ -82,6 +83,8 @@ function run() {
         speed = 0.1;
         decision_function(piece);
     }
+
+    //Start game
     if (gameplay) {
         clearInterval(gameplay);
     }
@@ -148,11 +151,32 @@ function action(p, rotation, translation) {
 
 //Game Functions
 function draw() {
+    displayInfo();
+    updateLevel();
     drawGrid(gameBoard,tetrisCtx);
     if (!gameOver) {
      piece.showGhost();
         requestAnimationFrame(draw);
     }
+}
+
+function updateLevel() {
+    if (lines >= level * 5) {
+        lines = 0;
+        level ++;  
+        updateSpeed();      
+    }
+}
+
+function updateSpeed() {
+    speed = 1000 * Math.pow((0.8 - ((level -1) * 0.007)), level-1);
+    if (gameplay) {
+        clearInterval(gameplay);
+    }
+    gameplay = setInterval(()=> {
+        displayInfo();
+        piece.moveDown();
+    }, speed);
 }
 
 function drawSquare(x,y,color, ctx){
@@ -178,6 +202,7 @@ function drawGrid(matrix,ctx) {
    }));
 }
 
+//gets the next piece.
 function getPiece() {
     if (!gameOver) {
         nextPiece.push(randomPiece());
@@ -209,6 +234,7 @@ function randomPiece() {
     return piece;
 }
 
+//Using the hold queue.
 function hold() {
     drawGrid(holdMatrix, holdCtx)
     piece.tetrominoIdx = 0;
@@ -293,43 +319,6 @@ function keyPressed() {
     }
 }
 
-function toggleAI() {
-    if (ai == true) {
-        ai = false;
-    } else {
-        ai = true;
-    }
-    run();
-}
-
-function showText(text) {
-    let id = ["the_genetic_algorithm", "decision_function", "how_to_play"];
-    switch (text) {
-        case "the_genetic_algorithm":
-            document.getElementById("genetic_algorithm").style.display = 'block';
-            document.getElementById("eKeyMsg").innerHTML = "[E] Evolved AI";
-            document.getElementById("evolved_weights").style.display = 'none';
-            break;
-        case "decision_function":
-            document.getElementById("genetic_algorithm").style.display = 'none';
-            document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
-            document.getElementById("evolved_weights").style.display = 'block'; 
-            break;
-        case "how_to_play":
-            document.getElementById("genetic_algorithm").style.display = 'none';
-            document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
-            break;
-    }
-
-    id.forEach((elm, i) => {
-        if (elm == text) {
-            document.getElementById(elm).style.display = "block";
-        } else {
-            document.getElementById(elm).style.display = "none";
-        }
-    })
-}
-
 function toggleGA() {
     if (ga == true) {
         ga = false;
@@ -343,7 +332,39 @@ function toggleGA() {
     }
 }
 
+function showText(text) {
+    let id = ["the_genetic_algorithm", "decision_function", "how_to_play"];
+    switch (text) {
+        case "the_genetic_algorithm":
+            document.getElementById("genetic_algorithm").style.display = 'block';
+            document.getElementById("eKeyMsg").innerHTML = "[E] Evolved AI";
+            document.getElementById("evolved_weights").style.display = 'none';
+            document.getElementById("level_div").style.display = 'none';
+            break;
+        case "decision_function":
+            document.getElementById("genetic_algorithm").style.display = 'none';
+            document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
+            document.getElementById("evolved_weights").style.display = 'block'; 
+             document.getElementById("level_div").style.display = 'none';
+            break;
+        case "how_to_play":
+            document.getElementById("genetic_algorithm").style.display = 'none';
+            document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
+            document.getElementById("level_div").style.display = 'block';
+            break;
+    }
+
+    id.forEach((elm, i) => {
+        if (elm == text) {
+            document.getElementById(elm).style.display = "block";
+        } else {
+            document.getElementById(elm).style.display = "none";
+        }
+    })
+}
+
 function displayInfo() {
+    document.getElementById("level").innerHTML = level;
     document.getElementById("lines").innerHTML = lines;
     document.getElementById("game_score").innerHTML = game_score;
     document.getElementById("generation").innerHTML = generation;
