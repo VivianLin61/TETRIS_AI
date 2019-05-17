@@ -181,7 +181,7 @@ function Game(dna) {
     this.lines = 0;
 
     this.update = function() {
-        if (moves == 500 || gameOver == true){
+        if (gameOver == true){
             this.lines = lines;
             this.fitness = game_score;
         }
