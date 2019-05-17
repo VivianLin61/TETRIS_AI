@@ -244,22 +244,22 @@ function keyReleased() {
         spacePressed = false;
     } 
     if (event.keyCode === 80) {
-        oPressed = false;
+        pPressed = false;
     }
     if (event.keyCode === 69) {
         ePressed = false;
     } 
 }
+
 function keyPressed() {
     //P Pressed
     //Turn Off AI
-    if (event.keyCode ==80) {
+    if (event.keyCode == 80) {
         if(pPressed == false) {
             pPressed = true;
             ga = false;
             ai = false;
-            document.getElementById("genetic_algorithm").style.display = 'none';
-            document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
+            showText("how_to_play");
             load();
         }
     }
@@ -302,15 +302,41 @@ function toggleAI() {
     run();
 }
 
+function showText(text) {
+    let id = ["the_genetic_algorithm", "decision_function", "how_to_play"];
+    switch (text) {
+        case "the_genetic_algorithm":
+            document.getElementById("genetic_algorithm").style.display = 'block';
+            document.getElementById("eKeyMsg").innerHTML = "[E] Evolved AI";
+            document.getElementById("evolved_weights").style.display = 'none';
+            break;
+        case "decision_function":
+            document.getElementById("genetic_algorithm").style.display = 'none';
+            document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
+            document.getElementById("evolved_weights").style.display = 'block'; 
+            break;
+        case "how_to_play":
+            document.getElementById("genetic_algorithm").style.display = 'none';
+            document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
+            break;
+    }
+
+    id.forEach((elm, i) => {
+        if (elm == text) {
+            document.getElementById(elm).style.display = "block";
+        } else {
+            document.getElementById(elm).style.display = "none";
+        }
+    })
+}
+
 function toggleGA() {
     if (ga == true) {
         ga = false;
-        document.getElementById("genetic_algorithm").style.display = 'none';
-        document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
+        showText("decision_function");
         load();
     } else {
-        document.getElementById("genetic_algorithm").style.display = 'block';
-        document.getElementById("eKeyMsg").innerHTML = "[E] Evolved AI";
+        showText("the_genetic_algorithm");
         ga = true;
         initialize();
         load();

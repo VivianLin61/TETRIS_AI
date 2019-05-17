@@ -49,10 +49,10 @@
 
         #left_container {
             position: absolute;
-            top:160px;
+            top:20px;
             height: 300px;
             left:50%;
-            margin-left: -400px;
+            margin-left: -550px;
             width: 290px;
             display: block;
         }
@@ -69,32 +69,52 @@
             position: absolute;
             top: 90px;
         }
+
+        #how_to_play {
+            display: none;
+        }
+        #the_genetic_algorithm {
+            display: block;
+        }
+        #decision_function {
+            display: none;
+        }
+        #evolved_weights {
+            display: none;
+        }
   
     </style>
 </head>
 <body onload = "load();">
-   <div class="title">TETRIS AI - Genetic Algorithm</div>
-     <div id="commands" class="title"> 
-           <span>[P] Play Tetris</span>
-   <span  id="eKeyMsg">[E] Evolved AI</span>
-
-
+    <div class="title">TETRIS AI - Genetic Algorithm</div>
+    <div id="commands" class="title"> 
+        <span>[P] Play Tetris</span>
+        <span id="eKeyMsg">[E] Evolved AI</span>
     </div>
-   <div><div id="hold_txt">Hold </div><span id="next_txt"> Next</span></div>
+    <div><div id="hold_txt">Hold </div><span id="next_txt"> Next</span></div>
 
     <canvas id="tetris" width="200" height="400"></canvas>
     <canvas id="hold" width="100" height="100"></canvas> 
     <canvas id="next" width="100" height="100"></canvas>
-
 
     <script src="tetrominoes.js"></script>
     <script src="tetromino.js"></script>
     <script src="tetris.js"></script>
     <script src="ga.js"></script>
 
+
     <div id="right-container">
         <div>Lines Cleared: <span id="lines">0</span></div>
         <div>Score: <span id="game_score">0</span></div>
+        <div id="evolved_weights"> 
+            <div>Evolved Weights: {
+            <div class="weights" >Height:<span>0.012986105043601821</span> </div>
+            <div class="weights" >Holes: <span>-0.33099889329580323</span></div>
+            <div class="weights" >Cleared: <span>0.5446471620000896</span></div>
+            <div class="weights" >Bumpiness:<span>-0.25120763453283845</span></div>
+            <div class="weights" >Vacant: <span>-0.13253702980064244</span></div>
+        } </div>
+        </div>
         <div id="genetic_algorithm">
         <div>Generation: <span id="generation">0</span></div>
         <div>Max Fitness: <span id="max_fit">0</span></div>
@@ -118,19 +138,47 @@
          </div>
     </div>
 
-
     <div id="left_container">
 
-    <div id="play">
-        <h1 class="title"> How To Play</h1>
-        <ul>
-            <li class="play">Move the tetrominoes left and right with the LEFT and RIGHT arrow keys</li>
-            <li class="play">Rotate the terominoes with the UP key.</li>
-            <li class="play">Press the DOWN Arrow key to perform a soft drop. (The tetromino will fall faster than normal)</li>
-            <li class="play">Press the SPACE bar to perform a hard drop. (The tetromino will fall straight down)</li>
-            <li class="play">Press the C key to activate the hold queue. </li>
-        </ul>
-    </div>
+        <div id="decision_function"> 
+            <h1 class="title">Decision Function</h1>
+            <ol>
+                <li>Agent simulates and evaluates all possible boards that would result from all possible moves of the given piece.</li>
+                <li>Given current piece to place, the agent will make a decision based on which action (rotation and translations) will give the "best board" or the highest score based on evaluation (linear combination of the weights and their corresponding feature)</li>
+            </ol>
+
+        </div>
+
+        <div id="the_genetic_algorithm">
+            <h1 class="title">The Genetic Algorithm</h1>
+            <ol> 
+                <li>Create a random initial population of games.</li>
+                <li>Then the algorithm creates a sequence of new populations using games from the previous population.</li>
+                    <ol type="a"> 
+                        <li>Use the game_score of each game to compute its fitness value.</li>
+                        <li>Select two members from the previous population based on their fitness score. (Games with higher fitness scores are more likely to be picked)</li>
+                        <li>Produce a child game using crossover or mutation.</li>
+                            <ul>
+                                <li>Crossover- combine two parents games.  The genes of the offspring will lean towards the fitter parent.</li>
+                                <li>Mutation- each child has a 10% chance to mutate. If it does mutate then multiply each weight by a random decimal multiplied by the mutation multiplier.</li>
+                            </ul>
+                        <li>When the number of off-springs equal half the population, replace the weakest 50% of the current population with the newly produced children.</li>
+                    </ol>
+                <li>Stop the algorithm when it reaches the fitness limit.</li>
+            </ol>
+        </div>
+
+        <div id="how_to_play">
+            <h1 class="title"> How To Play</h1>
+            <ul>
+                <li class="play">Move the tetrominoes left and right with the LEFT and RIGHT arrow keys</li>
+                <li class="play">Rotate the terominoes with the UP key.</li>
+                <li class="play">Press the DOWN Arrow key to perform a soft drop. (The tetromino will fall faster than normal)</li>
+                <li class="play">Press the SPACE bar to perform a hard drop. (The tetromino will fall straight down)</li>
+                <li class="play">Press the C key to activate the hold queue. </li>
+            </ul>
+        </div>
+
     </div>
 
 </body>
