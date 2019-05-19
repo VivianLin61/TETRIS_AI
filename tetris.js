@@ -83,15 +83,7 @@ function run() {
         speed = 0.1;
         decision_function(piece);
     }
-
-    //Start game
-    if (gameplay) {
-        clearInterval(gameplay);
-    }
-    gameplay = setInterval(()=> {
-        displayInfo();
-        piece.moveDown();
-    }, speed);
+    startGame();
 }
 
 // AI Functions
@@ -170,13 +162,7 @@ function updateLevel() {
 
 function updateSpeed() {
     speed = 1000 * Math.pow((0.8 - ((level -1) * 0.007)), level-1);
-    if (gameplay) {
-        clearInterval(gameplay);
-    }
-    gameplay = setInterval(()=> {
-        displayInfo();
-        piece.moveDown();
-    }, speed);
+    startGame();
 }
 
 function drawSquare(x,y,color, ctx){
@@ -258,6 +244,16 @@ function endGame() {
     gameOver = true;
 }
 
+function startGame() {
+    if (gameplay) {
+        clearInterval(gameplay);
+    }
+    gameplay = setInterval(()=> {
+        displayInfo();
+        piece.moveDown();
+    }, speed);
+
+}
 document.addEventListener("keydown", keyPressed);
 document.addEventListener("keyup", keyReleased);
 

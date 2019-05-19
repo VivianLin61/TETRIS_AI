@@ -1,18 +1,17 @@
 initialize_training_varaibles();
 
 function initialize_training_varaibles() {
-  POPSIZE = 100;
+  POPSIZE = 50;
   generation = 1;
   maxFitness = 0;
   maxLines = 0;
   num_of_games = 1;
-  mutation_rate = 0.05;
-  //How much the mutation affects the child
+  mutation_rate = 0.05; 
   //fitness_limit = ;
-  move_limit = 500;
-  mutation_multiplier = 0.2;
-  alpha_multiplier = 0.8;
-  beta_multiplier = 0.2;
+  //move_limit = 50000;
+  mutation_multiplier = 0.4;
+  alpha_multiplier = 0.7;
+  beta_multiplier = 0.3;
   best_weights = {
     a:0,
     b:0,
@@ -181,7 +180,7 @@ function Game(dna) {
     this.lines = 0;
 
     this.update = function() {
-        if (moves == move_limit || gameOver == true){
+        if (gameOver == true){
           gameOver = true;
             this.lines = lines;
             this.fitness = game_score;
