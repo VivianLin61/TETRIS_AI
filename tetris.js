@@ -303,6 +303,7 @@ function keyPressed() {
             piece.rotate();
         } else if (event.keyCode === 32) {
             if (spacePressed == false) {
+                console.log("spacen pressed")
                 spacePressed = true;
                 piece.y = piece.gY;
                 piece.lock(gameBoard);

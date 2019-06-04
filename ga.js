@@ -7,8 +7,6 @@ function initialize_training_varaibles() {
   maxLines = 0;
   num_of_games = 1;
   mutation_rate = 0.05; 
-  //fitness_limit = ;
-  //move_limit = 50000;
   mutation_multiplier = 0.4;
   alpha_multiplier = 0.7;
   beta_multiplier = 0.3;
@@ -51,7 +49,7 @@ function genetic_algorithm() {
     population.games[num_of_games-1].startGame();
     generation ++;
   }
-  if (ga == true ) {
+  if (generation <= 25) {
     requestAnimationFrame(genetic_algorithm);
   }
 }
