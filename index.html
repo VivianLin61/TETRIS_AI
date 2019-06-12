@@ -63,15 +63,10 @@
             position: absolute;
             top: 90px;
         }
-        #the_genetic_algorithm {
-            display: block;
-        }
         #how_to_play {
             display: none;
         }
-        #decision_function {
-            display: none;
-        }
+
         #evolved_weights {
             display: none;
         }
@@ -134,36 +129,6 @@
     </div>
 
     <div id="left_container">
-        <div id="decision_function"> 
-            <h1 class="title">Decision Function</h1>
-            <ol>
-                <li>Agent simulates and evaluates all possible boards that would result from all possible moves of the given piece.</li>
-                <li>Given current piece to place, the agent will make a decision based on which action (rotation and translations) will give the "best board" or the highest score based on evaluation function.</li>
-            </ol>
-
-        </div>
-
-        <div id="the_genetic_algorithm">
-            <h1 class="title">The Genetic Algorithm</h1>
-            <ol> 
-                <li>Create a random initial population of games.</li>
-                <li>Simuluate 50 games using the weights from the population </li>
-                <li>Then the algorithm creates a sequence of new populations using games from the previous population.</li>
-                    <ol type="a">
-                        <li>Use the game_score from the game to compute its fitness value.</li>
-                        <li>Select two members from the previous population based on their fitness score. (Games with higher fitness scores are more likely to be picked)</li>
-                        <li>Produce a child game using crossover or mutation.</li>
-                            <ul>
-                                <li>Crossover- combine two parents games. The genes of the offspring will lean towards the fitter parent.</li>
-                                <li>Mutation- each child has a 10% chance to mutate. If it does mutate then multiply each weight by a random decimal multiplied by the mutation multiplier.</li>
-                            </ul>
-                        <li>Repeat step 2 until the 25 children are created. </li>
-                        <li>Replace the weakest 50% of the current population with the newly produced children.</li>
-                    </ol>
-                <li>Stop the algorithm when generation is equal to 25.</li>
-            </ol>
-        </div>
-
         <div id="how_to_play">
             <h1 class="title"> How To Play</h1>
             <ul>
