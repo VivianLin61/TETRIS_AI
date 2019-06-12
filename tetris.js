@@ -77,10 +77,10 @@ function run() {
               b:-0.33099889329580323,
               c:0.5446471620000896,
               d:-0.25120763453283845,
-              e:-0.13253702980064244,
+              e:-0.13253702980064244
             }
         }
-        speed = 0.1;
+        speed = 25;
         decision_function(piece);
     }
     startGame();
@@ -98,6 +98,7 @@ function decision_function(p) {
 //tests all possible moves to find the best move.
     for (var translation = -1; translation < 9; translation ++) {
         for (var rotation = 0; rotation < 4; rotation ++) {
+        	//simulates the action and calculates the score the new board.
             let score = action(p, rotation,translation);
             if(score === Number.NEGATIVE_INFINITY) {
                 illegalMoves ++;
@@ -117,19 +118,14 @@ function decision_function(p) {
     makeMove(move);
 }
 
-function makeMove(move) {
-    piece.tetrominoIdx = move.rotation;
-    piece.currTetromino = piece.tetromino[move.rotation];
-    piece.x = move.translation;
-}
-
 function action(p, rotation, translation) {
+	//create a clone of the current piece.
     var pieceClone = new Tetromino(p.tetromino, p.color);
     if (pieceClone.color == YELLOW) {
         rotation = 0;
     }
     let xMove = translation - pieceClone.x;
-    //check if piece is playable.
+    //check if piece is playable. Then simulate the piece being placed on the board.
     if (!pieceClone.collision(xMove, 0, pieceClone.tetromino[rotation])) {
         pieceClone.currTetromino = pieceClone.tetromino[rotation];
         pieceClone.x = translation;
@@ -141,10 +137,21 @@ function action(p, rotation, translation) {
     return Number.NEGATIVE_INFINITY;
 }
 
+
+//set the values of the current piece to the best move. 
+function makeMove(move) {
+    piece.tetrominoIdx = move.rotation;
+    piece.currTetromino = piece.tetromino[move.rotation];
+    piece.x = move.translation;
+}
+
+
 //Game Functions
 function draw() {
     displayInfo();
-    updateLevel();
+    if (ai == false) {
+        updateLevel();
+    }
     drawGrid(gameBoard,tetrisCtx);
     if (!gameOver) {
      piece.showGhost();
@@ -265,11 +272,11 @@ function keyReleased() {
     if (event.keyCode === 32) {
         spacePressed = false;
     } 
-    if (event.keyCode === 80) {
-        pPressed = false;
-    }
     if (event.keyCode === 69) {
         ePressed = false;
+        if (pPressed == true) {
+            pPressed = false;
+        }
     } 
 }
 
@@ -292,7 +299,7 @@ function keyPressed() {
             toggleGA();
         }
     }
-    if (ai == false && !gameOver) {
+    if ((ai == false ) && !gameOver) {
         if (event.keyCode === 37) {
             piece.moveLeft();
         } else if (event.keyCode === 39) {
@@ -303,7 +310,6 @@ function keyPressed() {
             piece.rotate();
         } else if (event.keyCode === 32) {
             if (spacePressed == false) {
-                console.log("spacen pressed")
                 spacePressed = true;
                 piece.y = piece.gY;
                 piece.lock(gameBoard);
@@ -313,13 +319,21 @@ function keyPressed() {
             if (canHold)
                 hold();
         }
+    } else {
+        //change speed
+        if (event.keyCode === 83) {
+            speedArray = [1,25,1000];
+            var speedIdx = speedArray.indexOf(speed);
+            speed = speedArray[(speedIdx + 1) % 3];
+            startGame();
+        }
     }
 }
 
 function toggleGA() {
     if (ga == true) {
         ga = false;
-        showText("decision_function");
+        showText("evolved_ai");
         load();
     } else {
         showText("the_genetic_algorithm");
@@ -330,34 +344,30 @@ function toggleGA() {
 }
 
 function showText(text) {
-    let id = ["the_genetic_algorithm", "decision_function", "how_to_play"];
     switch (text) {
         case "the_genetic_algorithm":
             document.getElementById("genetic_algorithm").style.display = 'block';
+            document.getElementById("how_to_play").style.display = 'none';
             document.getElementById("eKeyMsg").innerHTML = "[E] Evolved AI";
             document.getElementById("evolved_weights").style.display = 'none';
             document.getElementById("level_div").style.display = 'none';
             break;
-        case "decision_function":
+        case "evolved_ai":
             document.getElementById("genetic_algorithm").style.display = 'none';
+            document.getElementById("how_to_play").style.display = 'none';
             document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
             document.getElementById("evolved_weights").style.display = 'block'; 
              document.getElementById("level_div").style.display = 'none';
             break;
         case "how_to_play":
             document.getElementById("genetic_algorithm").style.display = 'none';
+            document.getElementById("how_to_play").style.display = 'block';
             document.getElementById("eKeyMsg").innerHTML = "[E] Training AI";
             document.getElementById("level_div").style.display = 'block';
+            document.getElementById("evolved_weights").style.display = 'none';
             break;
     }
 
-    id.forEach((elm, i) => {
-        if (elm == text) {
-            document.getElementById(elm).style.display = "block";
-        } else {
-            document.getElementById(elm).style.display = "none";
-        }
-    })
 }
 
 function displayInfo() {
@@ -367,7 +377,7 @@ function displayInfo() {
     document.getElementById("generation").innerHTML = generation;
     document.getElementById("max_fit").innerHTML = maxFitness;
     document.getElementById("max_lines").innerHTML = maxLines;
-    document.getElementById("game_number").innerHTML = num_of_games;
+    document.getElementById("game_number").innerHTML = game_num;
     document.getElementById("moves").innerHTML = moves;
     document.getElementById("max_games").innerHTML = POPSIZE;
     document.getElementById("height").innerHTML =  best_weights.a;
