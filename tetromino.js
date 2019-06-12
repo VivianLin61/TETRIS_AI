@@ -306,7 +306,7 @@ let vacant = 0;
 
   this.features.vacant = vacant;
 }
-  //linear combination of the features and their weights.
+  //combination of the features and their respective weights.
   evaluation_function(features) {
     this.score = features.height*weights.a + features.holes*weights.b + features.cleared*weights.c + features.bumpiness*weights.d + features.vacant*weights.e;
   }
