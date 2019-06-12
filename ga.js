@@ -5,7 +5,7 @@ function initialize_training_varaibles() {
   generation = 1;
   maxFitness = 0;
   maxLines = 0;
-  num_of_games = 1;
+  game_num = 1;
   mutation_rate = 0.05; 
   mutation_multiplier = 0.4;
   alpha_multiplier = 0.7;
@@ -29,24 +29,24 @@ function initialize_training_varaibles() {
 function setup() {
   initialize_training_varaibles();
   population = new Population();
-  population.games[num_of_games-1].startGame();
+  population.games[game_num-1].startGame();
   genetic_algorithm();
 }
 
 function genetic_algorithm() {
-  population.games[num_of_games-1].update();
+  population.games[game_num-1].update();
 
   if (gameOver == true) {
     moves = 0;
-    num_of_games ++;
-    population.games[num_of_games-1].startGame();
+    game_num ++;
+    population.games[game_num-1].startGame();
   }
 
-  if (num_of_games == POPSIZE) {
+  if (game_num == POPSIZE) {
     population.evaluate();
     population.selection();
-    num_of_games = 1;
-    population.games[num_of_games-1].startGame();
+    game_num = 1;
+    population.games[game_num-1].startGame();
     generation ++;
   }
   if (generation <= 25) {
@@ -94,7 +94,6 @@ function Population() {
   this.selection = function() {
     var newGames = [];
     for (var i = 0; i < (this.games.length/2); i++) {
-      // Picks random dna
       var parentA = this.pickOne(this.games);
       var parentB = this.pickOne(this.games);
       // Creates child by using crossover function
@@ -174,7 +173,9 @@ function Game(dna) {
     }
 
     this.fitness = 0;
+    //the probability this game is choosen from the population.
     this.prob = 0;
+    //the number of lines this game cleared.
     this.lines = 0;
 
     this.update = function() {
@@ -192,6 +193,7 @@ function Game(dna) {
         initialize();
         gameOver = false;
         weights = Object.assign({}, this.dna.genes);
+        //Run the ai using the newly assigned weights.
         run();
     }
 }
