@@ -1,1 +1,1 @@
-Tetris AI (Genetic Algorithm)
+##Tetris AI
