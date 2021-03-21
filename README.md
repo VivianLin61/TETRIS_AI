@@ -1,4 +1,5 @@
 ### Tetris AI
+https://vivianlin61.github.io/tetris_ai/
 
 - A JavaScript implementation of Tetris with a simple AI that learns to play the game by itself.
 
