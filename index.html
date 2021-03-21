@@ -1,21 +1,25 @@
 <head>
     <title>Tetris</title>
     <style>
-        #score{
+        #score {
             display: inline-block;
         }
-        .title{
+
+        .title {
             font-size: 25px;
             font-weight: bold;
             font-family: monospace;
             text-align: center;
         }
-        #tetris{
+
+        #tetris {
             position: absolute;
             left: 50%;
             margin-left: -100px;
         }
-        #hold, #hold_txt{
+
+        #hold,
+        #hold_txt {
             position: absolute;
             left: 50%;
             margin-left: -200px;
@@ -23,46 +27,55 @@
             font-family: monospace;
             font-size: 20px;
         }
-        #next, #next_txt{
+
+        #next,
+        #next_txt {
             font-size: 20px;
             position: absolute;
-            left:50%;
+            left: 50%;
             margin-left: 120px;
             font-weight: bold;
             font-family: monospace;
         }
+
         button {
             display: block;
         }
+
         #right-container {
             position: absolute;
-            top:180px;
+            top: 180px;
             height: 300px;
-            left:50%;
+            left: 50%;
             margin-left: 120px;
             width: 400px;
             display: block;
         }
+
         #left_container {
             position: absolute;
-            top:20px;
+            top: 20px;
             height: 300px;
-            left:50%;
+            left: 50%;
             margin-left: -550px;
             width: 290px;
             display: block;
         }
-        #text{
+
+        #text {
             border: 1px solid black;
             height: 200px;
         }
+
         .weights {
             text-indent: 20px;
         }
+
         canvas {
             position: absolute;
             top: 90px;
         }
+
         #how_to_play {
             display: none;
         }
@@ -70,21 +83,25 @@
         #evolved_weights {
             display: none;
         }
-        #level_div{
+
+        #level_div {
             display: none;
         }
     </style>
 </head>
-<body onload = "load();">
+
+<body onload="load();">
     <div class="title">TETRIS AI - Genetic Algorithm</div>
-    <div id="commands" class="title"> 
+    <div id="commands" class="title">
         <span>[P] Play Tetris</span>
         <span id="eKeyMsg">[E] Evolved AI</span>
     </div>
-    <div><div id="hold_txt">Hold </div><span id="next_txt"> Next</span></div>
+    <div>
+        <div id="hold_txt">Hold </div><span id="next_txt"> Next</span>
+    </div>
 
     <canvas id="tetris" width="200" height="400"></canvas>
-    <canvas id="hold" width="100" height="100"></canvas> 
+    <canvas id="hold" width="100" height="100"></canvas>
     <canvas id="next" width="100" height="100"></canvas>
 
     <script src="tetrominoes.js"></script>
@@ -96,36 +113,39 @@
         <div id="level_div">Level: <span id="level">1</span></div>
         <div>Lines Cleared: <span id="lines">0</span></div>
         <div>Score: <span id="game_score">0</span></div>
-        <div id="evolved_weights"> 
+        <div id="evolved_weights">
             <div>Evolved Weights: {
-            <div class="weights" >Height:<span>0.012986105043601821</span> </div>
-            <div class="weights" >Holes: <span>-0.33099889329580323</span></div>
-            <div class="weights" >Cleared: <span>0.5446471620000896</span></div>
-            <div class="weights" >Bumpiness:<span>-0.25120763453283845</span></div>
-            <div class="weights" >Vacant: <span>-0.13253702980064244</span></div>
-        } </div>
+                <div class="weights">Height:<span>0.012986105043601821</span> </div>
+                <div class="weights">Holes: <span>-0.33099889329580323</span></div>
+                <div class="weights">Cleared: <span>0.5446471620000896</span></div>
+                <div class="weights">Bumpiness:<span>-0.25120763453283845</span></div>
+                <div class="weights">Vacant: <span>-0.13253702980064244</span></div>
+                }
+            </div>
         </div>
         <div id="genetic_algorithm">
-        <div>Generation: <span id="generation">0</span></div>
-        <div>Max Fitness: <span id="max_fit">0</span></div>
-        <div>Max Lines: <span id="max_lines">0</span></div>
-        <div>Game Number: <span id="game_number">0</span>/<span id="max_games"></span></div>
-        <div>Moves: <span id="moves">0</span></div>
-        <div>Best Weights: {
-            <div class="weights" >Height:<span id="height"></span></div>
-            <div class="weights" >Holes: <span id="holes"></span></div>
-            <div class="weights" >Cleared: <span id="cleared"></span></div>
-            <div class="weights" >Bumpiness: <span id="bumpiness"> </span></div>
-            <div class="weights" >Vacant: <span id="vacant"></span></div>
-        } </div>
-        <div>Current Weights: {
-            <div class="weights" >Height:<span id="c.height"></span></div>
-            <div class="weights" >Holes: <span id="c.holes"></span></div>
-            <div class="weights" >Cleared: <span id="c.cleared"></span></div>
-            <div class="weights" >Bumpiness: <span id="c.bumpiness"></span></div>
-            <div class="weights" >Vacant: <span id="c.vacant"></span></div>
-        } </div>
-         </div>
+            <div>Generation: <span id="generation">0</span></div>
+            <div>Max Fitness: <span id="max_fit">0</span></div>
+            <div>Max Lines: <span id="max_lines">0</span></div>
+            <div>Game Number: <span id="game_number">0</span>/<span id="max_games"></span></div>
+            <div>Moves: <span id="moves">0</span></div>
+            <div>Best Weights: {
+                <div class="weights">Height:<span id="height"></span></div>
+                <div class="weights">Holes: <span id="holes"></span></div>
+                <div class="weights">Cleared: <span id="cleared"></span></div>
+                <div class="weights">Bumpiness: <span id="bumpiness"> </span></div>
+                <div class="weights">Vacant: <span id="vacant"></span></div>
+                }
+            </div>
+            <div>Current Weights: {
+                <div class="weights">Height:<span id="c.height"></span></div>
+                <div class="weights">Holes: <span id="c.holes"></span></div>
+                <div class="weights">Cleared: <span id="c.cleared"></span></div>
+                <div class="weights">Bumpiness: <span id="c.bumpiness"></span></div>
+                <div class="weights">Vacant: <span id="c.vacant"></span></div>
+                }
+            </div>
+        </div>
     </div>
 
     <div id="left_container">
@@ -134,11 +154,14 @@
             <ul>
                 <li class="play">Move the tetrominoes left and right with the LEFT and RIGHT arrow keys</li>
                 <li class="play">Rotate the terominoes with the UP key.</li>
-                <li class="play">Press the DOWN Arrow key to perform a soft drop. (The tetromino will fall faster than normal)</li>
-                <li class="play">Press the SPACE bar to perform a hard drop. (The tetromino will fall straight down)</li>
+                <li class="play">Press the DOWN Arrow key to perform a soft drop. (The tetromino will fall faster than
+                    normal)</li>
+                <li class="play">Press the SPACE bar to perform a hard drop. (The tetromino will fall straight down)
+                </li>
                 <li class="play">Press the C key to activate the hold queue. </li>
             </ul>
         </div>
     </div>
 </body>
+
 </html>
