@@ -23,7 +23,7 @@ const TETROMINOES = [
 ];
 
 //AI Variables
-let ai = false;
+let ai = true;
 let ga = geneticAlgorithm = true;
 let gameplay;
 let gameOver;
