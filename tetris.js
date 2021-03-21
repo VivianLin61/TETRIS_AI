@@ -24,7 +24,7 @@ const TETROMINOES = [
 
 //AI Variables
 let ai = true;
-let ga = geneticAlgorithm = true;
+let ga = geneticAlgorithm = false;
 let gameplay;
 let gameOver;
 
@@ -266,7 +266,7 @@ document.addEventListener("keyup", keyReleased);
 
 let spacePressed = false;
 let pPressed = false;
-let ePressed = false;
+let ePressed = true;
 
 function keyReleased() {
     if (event.keyCode === 32) {
