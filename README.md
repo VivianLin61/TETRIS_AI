@@ -1,7 +1,7 @@
 
 ### Tetris AI
 
-A JavaScript implementation of Tetris with a AI that learned to play the game by itself using an evolutionary algorithm. You can access it here: https://sorting-visualization-vivian.netlify.app/
+A JavaScript implementation of Tetris with a AI that learned to play the game by itself using an evolutionary algorithm. You can access it here: https://tetris-ai-vivian.netlify.app/
 
 The AI uses following parameters to determine the best position to place the next piece. 
  * Height- The AI would want to minimize the height because this means you can place more pieces.
