@@ -13,8 +13,7 @@ The AI uses following parameters to determine the best position to place the nex
 because it makes it harder to clear the tiles below where your piece is placed.
 
 ### Screenshots
-<img width="663" alt="tetris" src="https://user-images.githubusercontent.com/33815743/112341503-da93c600-8c97-11eb-9c9b-3d349605d2fd.png">
-
+<img width="682" alt="tetris" src="https://user-images.githubusercontent.com/33815743/112341806-1c247100-8c98-11eb-8fa6-074e0f4f107e.png">
 
 
 ### Sources that helped me make this
