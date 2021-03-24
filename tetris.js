@@ -29,8 +29,8 @@ const TETROMINOES = [
 ]
 
 //AI Variables
-let ai = false
-let ga = (geneticAlgorithm = true)
+let ai = true
+let ga = false
 let gameplay
 let gameOver
 
@@ -82,6 +82,7 @@ function run() {
     draw()
   } else {
     //if it not learning use fully evolved weights.
+
     if (ga == false) {
       weights = {
         a: 0.012986105043601821,
@@ -330,24 +331,28 @@ function keyPressed() {
       if (canHold) hold()
     }
   } else {
-    //change speed
+    //toggle speed
     if (event.keyCode === 83) {
-      speedArray = [1, 25, 1000]
-      var speedIdx = speedArray.indexOf(speed)
-      speed = speedArray[(speedIdx + 1) % 3]
+      if (speed == 25) {
+        speed = 1
+      } else {
+        speed = 25
+      }
+
       startGame()
     }
   }
 }
 
 function toggleGA() {
-  if (ga == true) {
-    ga = false
-    showText('evolved_ai')
+  if (ga == false) {
+    ga = true
+    showText('the_genetic_algorithm')
+
     load()
   } else {
-    showText('the_genetic_algorithm')
-    ga = true
+    ga = false
+    showText('evolved_ai')
     initialize()
     load()
   }
