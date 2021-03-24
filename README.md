@@ -1,3 +1,4 @@
+
 ### Tetris AI
 https://tetris-ai-vivian.netlify.app/
 
@@ -11,6 +12,7 @@ The AI uses following parameters to determine the best position to place the nex
  * Vacant- The AI want to minimize the number of vacant spots under where your piece is placed
 because it makes it harder to clear the tiles below where your piece is placed.
 
+<img width="663" alt="tetris" src="https://user-images.githubusercontent.com/33815743/112341503-da93c600-8c97-11eb-9c9b-3d349605d2fd.png">
 
 
 
