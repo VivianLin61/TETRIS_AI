@@ -10,8 +10,7 @@ The AI uses following parameters to determine the best position to place the nex
  * Vacant- The AI want to minimize the number of vacant spots under where your piece is placed
 because it makes it harder to clear the tiles below where your piece is placed.
 
-![L7H2Ikqq3m](https://user-images.githubusercontent.com/33815743/119290959-98e1b600-bc1b-11eb-9266-104dc2317c56.gif)
-
+![sbC7NTFWwA](https://user-images.githubusercontent.com/33815743/119291944-620c9f80-bc1d-11eb-8c06-af3cb3f8e0fa.gif)
 
 ### Sources that helped me make this
 * https://codemyroad.wordpress.com/2013/04/14/tetris-ai-the-near-perfect-player/
