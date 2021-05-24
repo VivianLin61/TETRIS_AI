@@ -1,4 +1,3 @@
-
 ### Tetris AI
 
 A JavaScript implementation of Tetris with a AI that learned to play the game by itself using an evolutionary algorithm. You can access it here: https://tetris-ai-vivian.netlify.app/
@@ -11,8 +10,7 @@ The AI uses following parameters to determine the best position to place the nex
  * Vacant- The AI want to minimize the number of vacant spots under where your piece is placed
 because it makes it harder to clear the tiles below where your piece is placed.
 
-### Screenshots
-<img width="682" alt="tetris" src="https://user-images.githubusercontent.com/33815743/112341806-1c247100-8c98-11eb-8fa6-074e0f4f107e.png">
+![L7H2Ikqq3m](https://user-images.githubusercontent.com/33815743/119290959-98e1b600-bc1b-11eb-9266-104dc2317c56.gif)
 
 
 ### Sources that helped me make this
